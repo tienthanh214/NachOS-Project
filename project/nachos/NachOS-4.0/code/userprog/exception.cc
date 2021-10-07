@@ -132,17 +132,38 @@ void ExceptionHandler(ExceptionType which) {
 
                     /* Modify return point */
                     IncreasePC();
-
                     return;
 
                     ASSERTNOTREACHED();
-
                     break;
+                
+                case SC_ReadNum:
+					int num = 0;
+					num = SysReadNum();                                     // system read integer number
+					kernel->machine->WriteRegister(2, (int)num);            // write the return value to register 2
+
+					IncreasePC();
+					return;
+
+					ASSERTNOTREACHED();
+					break;
+				
+				case SC_PrintNum:
+					int num = (int)kernel->machine->ReadRegister(4);        // get the number to print from register 4
+					SysPrintNum(num);                                       // system print number
+
+					IncreasePC();
+					return;
+
+					ASSERTNOTREACHED();					
+					break;
 
                 case SC_RandomNum:
                     kernel->machine->WriteRegister(2, SysRandomNumber());   // write result to register 2
+                    
                     IncreasePC();
                     return;
+
                     ASSERTNOTREACHED();
                     break;
 
@@ -156,9 +177,10 @@ void ExceptionHandler(ExceptionType which) {
                     SysReadString(buffer, length);                  // system read string
                     System2User(virtualAddr, length, buffer);       // return string to User space
                     delete buffer;
+                    
                     IncreasePC();   
-
                     return;
+
                     ASSERTNOTREACHED();
                     break;
 
@@ -167,17 +189,36 @@ void ExceptionHandler(ExceptionType which) {
                     buffer = User2System(virtualAddr, 255);         // copy string (max 255 byte) from User space to Kernel space
                     SysPrintString(buffer);                         // print string
                     delete buffer;    
-                    IncreasePC();
                     
+                    IncreasePC();
                     return;
+
+                case SC_Exit:
+				case SC_Exec:
+				case SC_Join:
+				case SC_Create:
+				case SC_Open:
+				case SC_Read:
+				case SC_Write:
+				case SC_Seek:
+				case SC_Close:
+				case SC_ThreadFork:   
+				case SC_ThreadYield:
+				case SC_ExecV:	    
+				case SC_ThreadExit:   
+				case SC_ThreadJoin:   
+				case SC_Remove:
+					cerr << "Not yet implemented system call " << type << "\n";
+					SysHalt(); 
+					break;
 
                 default:
                     cerr << "Unexpected system call " << type << "\n";
                     break;
-                
-    
             }
+            // Co nen them increase PC tai day khong
             break;
+
         default:
             cerr << "Unexpected user mode exception" << (int)which << "\n";
             break;
