@@ -39,6 +39,7 @@ int SysReadNum() {
     int num = 0;
     char c;
     bool isSign = false;
+    bool isInteger = true;
 
     do {
         c = kernel->synchConsoleIn->GetChar();
@@ -52,13 +53,15 @@ int SysReadNum() {
     do {
         num = num * 10 + c - '0';
         c = kernel->synchConsoleIn->GetChar();
-    } while (isDigit(c));
 
-    if (!isDigit(c))
+        if (!isDigit(c) && c != '\n')
+            isInteger = false;
+    } while (c != '\n' && c != ' ');
+
+    if (!isInteger) 
         return 0;
-
-    if (isSign) num = -num;
-
+    if (isSign) 
+        num = -num;
     return num;
 }
 
