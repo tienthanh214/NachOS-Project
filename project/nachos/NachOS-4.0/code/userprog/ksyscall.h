@@ -52,7 +52,7 @@ int SysReadNum() {
         c = kernel->synchConsoleIn->GetChar();
     }
 
-    if (!isDigit(c) && c != '\n' && c != ' ')
+    if (!isDigit(c))
         isInteger = false;
 
     do {
