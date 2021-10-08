@@ -108,6 +108,9 @@ void ExceptionHandler(ExceptionType which) {
     DEBUG(dbgSys, "Received Exception " << which << " type: " << type << "\n");
 
     switch (which) {
+        case NoException:
+            return;
+
         case SyscallException:
             switch (type) {
                 case SC_Halt:
@@ -219,6 +222,48 @@ void ExceptionHandler(ExceptionType which) {
             // Co nen them increase PC tai day khong
             break;
 
+        case PageFaultException:
+            DEBUG(dbgSys, "\nNo valid translation found");
+            printf("\nNo valid translation found");
+            SysHalt();
+            break;
+
+        case ReadOnlyException:
+            DEBUG(dbgSys, "\nRead-only");
+            printf("\nRead-only");
+            SysHalt();
+            break;
+
+        case BusErrorException:
+            DEBUG(dbgSys, "\nInvalid physical address");
+            printf("\nInvalid physical address");
+            SysHalt();
+            break;
+
+        case AddressErrorException:
+            DEBUG(dbgSys, "\nUnaligned reference or one that was beyond the end of the address space");
+            printf("\nUnaligned reference or one that was beyond the end of the address space");
+            SysHalt();
+            break;
+            
+        case OverflowException:
+            DEBUG(dbgSys, "\nInteger overflow in add or sub");
+            printf("\nInteger overflow in add or sub");
+            SysHalt();
+            break;
+
+        case IllegalInstrException:
+            DEBUG(dbgSys, "\nUnimplemented or reserved instr");
+            printf("\nUnimplemented or reserved instr");
+            SysHalt();
+            break;
+
+        case NumExceptionTypes:
+            DEBUG(dbgSys, "\nNumber exception types");
+            printf("\nNumber Exception types");
+            SysHalt();
+            break;
+            
         default:
             cerr << "Unexpected user mode exception" << (int)which << "\n";
             break;

@@ -34,7 +34,6 @@ bool isDigit(char c) {
     return false;
 }
 
-
 int SysReadNum() {
     int num = 0;
     char c;
@@ -43,6 +42,9 @@ int SysReadNum() {
 
     do {
         c = kernel->synchConsoleIn->GetChar();
+
+        if (!isDigit(c) && c != '-' && c != ' ' && c != '\n')
+            isInteger = false;
     } while (!isDigit(c) && c != '-');
 
     if (c == '-') {
@@ -50,18 +52,23 @@ int SysReadNum() {
         c = kernel->synchConsoleIn->GetChar();
     }
 
+    if (!isDigit(c) && c != '\n' && c != ' ')
+        isInteger = false;
+
     do {
         num = num * 10 + c - '0';
         c = kernel->synchConsoleIn->GetChar();
 
-        if (!isDigit(c) && c != '\n')
+        if (!isDigit(c) && c != '\n' && c != ' ')
             isInteger = false;
     } while (c != '\n' && c != ' ');
 
-    if (!isInteger) 
+    if (!isInteger)
         return 0;
-    if (isSign) 
+
+    if (isSign)
         num = -num;
+
     return num;
 }
 
