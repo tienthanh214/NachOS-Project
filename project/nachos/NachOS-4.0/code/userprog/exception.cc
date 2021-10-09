@@ -140,8 +140,8 @@ void ExceptionHandler(ExceptionType which) {
                     break;
                 
                 case SC_ReadNum:
-					int num = 0;
-					num = SysReadNum();                             // system read integer number
+					int num;
+                    num = SysReadNum();                             // system read integer number
 					kernel->machine->WriteRegister(2, (int)num);    // write the return value to register 2
 
 					IncreasePC();
@@ -151,7 +151,7 @@ void ExceptionHandler(ExceptionType which) {
 					break;
 				
 				case SC_PrintNum:
-					num = (int)kernel->machine->ReadRegister(4);    // get the number to print from register 4
+                    num = (int)kernel->machine->ReadRegister(4);    // get the number to print from register 4
 					SysPrintNum(num);                               // system print number
 
 					IncreasePC();
