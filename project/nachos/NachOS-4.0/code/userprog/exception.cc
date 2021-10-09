@@ -50,7 +50,6 @@
 
 /* Increase program counter */
 void IncreasePC() {
-    // int currentCounter = kernel->machine->ReadRegister(PCReg);
     /* set previous program counter (debugging only)*/
     kernel->machine->WriteRegister(PrevPCReg, kernel->machine->ReadRegister(PCReg));
 
