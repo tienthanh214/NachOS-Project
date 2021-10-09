@@ -141,8 +141,8 @@ void ExceptionHandler(ExceptionType which) {
                 
                 case SC_ReadNum:
 					int num = 0;
-					num = SysReadNum();                                     // system read integer number
-					kernel->machine->WriteRegister(2, (int)num);            // write the return value to register 2
+					num = SysReadNum();                             // system read integer number
+					kernel->machine->WriteRegister(2, (int)num);    // write the return value to register 2
 
 					IncreasePC();
 					return;
@@ -151,8 +151,8 @@ void ExceptionHandler(ExceptionType which) {
 					break;
 				
 				case SC_PrintNum:
-					int num = (int)kernel->machine->ReadRegister(4);        // get the number to print from register 4
-					SysPrintNum(num);                                       // system print number
+					num = (int)kernel->machine->ReadRegister(4);    // get the number to print from register 4
+					SysPrintNum(num);                               // system print number
 
 					IncreasePC();
 					return;
@@ -228,14 +228,14 @@ void ExceptionHandler(ExceptionType which) {
             break;
 
         case ReadOnlyException:
-            DEBUG(dbgSys, "\nRead-only");
-            printf("\nRead-only");
+            DEBUG(dbgSys, "\nWrite attempted to page marked \"read-only\"");
+            printf("\nWrite attempted to page marked \"read-only\"");
             SysHalt();
             break;
 
         case BusErrorException:
-            DEBUG(dbgSys, "\nInvalid physical address");
-            printf("\nInvalid physical address");
+            DEBUG(dbgSys, "\nTranslation resulted in an invalid physical address");
+            printf("\nTranslation resulted in an invalid physical address");
             SysHalt();
             break;
 
