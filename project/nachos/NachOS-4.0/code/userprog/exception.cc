@@ -160,6 +160,27 @@ void ExceptionHandler(ExceptionType which) {
 					ASSERTNOTREACHED();					
 					break;
 
+                case SC_ReadChar:
+                    char c; 
+                    c = SysReadChar();			  //read a character
+                    kernel->machine->WriteRegister(2,c);  //write the return value to register 2	
+                    
+                    IncreasePC();
+
+                    return;
+                    ASSERTNOTREACHED();
+                    break;
+
+                case SC_PrintChar:
+                    c = kernel->machine->ReadRegister(4);       //get the character to print from register 4
+                    SysPrintChar(c);				//print character
+                    
+                    IncreasePC();
+
+                    return;
+                    ASSERTNOTREACHED();
+                    break;
+                    
                 case SC_RandomNum:
                     kernel->machine->WriteRegister(2, SysRandomNumber());   // write result to register 2
                     

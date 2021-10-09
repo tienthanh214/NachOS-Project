@@ -99,6 +99,20 @@ void SysPrintNum(int op1) {
     }
 }
 
+char SysReadChar(){
+
+    char c;
+    c = kernel->synchConsoleIn->GetChar();
+    return c;
+
+};
+
+
+
+void SysPrintChar(char c){
+    kernel->synchConsoleOut->PutChar(c);
+}
+
 void SysReadString(char* buffer, int length) {
     int idx;
     char ch;
