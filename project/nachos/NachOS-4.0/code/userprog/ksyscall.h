@@ -28,6 +28,77 @@ unsigned int SysRandomNumber() {
     return RandomNumber();
 }
 
+bool isDigit(char c) {
+    if (c >= '0' && c <= '9')
+        return true;
+    return false;
+}
+
+int SysReadNum() {
+    int num = 0;
+    char c;
+    bool isSign = false;
+    bool isInteger = true;
+
+    do {
+        c = kernel->synchConsoleIn->GetChar();
+
+        if (!isDigit(c) && c != '-' && c != ' ' && c != '\n')
+            isInteger = false;
+    } while (!isDigit(c) && c != '-');
+
+    if (c == '-') {
+        isSign = true;
+        c = kernel->synchConsoleIn->GetChar();
+    }
+
+    if (!isDigit(c))
+        isInteger = false;
+
+    do {
+        num = num * 10 + c - '0';
+        c = kernel->synchConsoleIn->GetChar();
+
+        if (!isDigit(c) && c != '\n' && c != ' ')
+            isInteger = false;
+    } while (c != '\n' && c != ' ');
+
+    if (!isInteger)
+        return 0;
+
+    if (isSign)
+        num = -num;
+
+    return num;
+}
+
+void SysPrintNum(int op1) {
+    if (op1 == 0) {
+        kernel->synchConsoleOut->PutChar('0');
+        return;
+    }
+
+    if (op1 < 0) {
+        kernel->synchConsoleOut->PutChar('-');
+        op1 = -op1;
+    }
+
+    char arr[11];
+    int i = 0;
+    int j, r;
+
+    while (op1 != 0) {
+        r = op1 % 10;
+        arr[i] = r;
+        i++;
+        op1 = op1 / 10;
+    }
+
+    for (j = i - 1; j > -1; --j) {
+        kernel->synchConsoleOut->PutChar('0' + arr[j]);
+    }
+}
+
 void SysReadString(char* buffer, int length) {
     int idx;
     char ch;

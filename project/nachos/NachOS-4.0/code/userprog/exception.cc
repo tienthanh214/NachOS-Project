@@ -107,6 +107,9 @@ void ExceptionHandler(ExceptionType which) {
     DEBUG(dbgSys, "Received Exception " << which << " type: " << type << "\n");
 
     switch (which) {
+        case NoException:
+            return;
+
         case SyscallException:
             switch (type) {
                 case SC_Halt:
@@ -131,17 +134,38 @@ void ExceptionHandler(ExceptionType which) {
 
                     /* Modify return point */
                     IncreasePC();
-
                     return;
 
                     ASSERTNOTREACHED();
-
                     break;
+                
+                case SC_ReadNum:
+					int num = 0;
+					num = SysReadNum();                                     // system read integer number
+					kernel->machine->WriteRegister(2, (int)num);            // write the return value to register 2
+
+					IncreasePC();
+					return;
+
+					ASSERTNOTREACHED();
+					break;
+				
+				case SC_PrintNum:
+					int num = (int)kernel->machine->ReadRegister(4);        // get the number to print from register 4
+					SysPrintNum(num);                                       // system print number
+
+					IncreasePC();
+					return;
+
+					ASSERTNOTREACHED();					
+					break;
 
                 case SC_RandomNum:
                     kernel->machine->WriteRegister(2, SysRandomNumber());   // write result to register 2
+                    
                     IncreasePC();
                     return;
+
                     ASSERTNOTREACHED();
                     break;
 
@@ -155,9 +179,10 @@ void ExceptionHandler(ExceptionType which) {
                     SysReadString(buffer, length);                  // system read string
                     System2User(virtualAddr, length, buffer);       // return string to User space
                     delete buffer;
+                    
                     IncreasePC();   
-
                     return;
+
                     ASSERTNOTREACHED();
                     break;
 
@@ -166,17 +191,78 @@ void ExceptionHandler(ExceptionType which) {
                     buffer = User2System(virtualAddr, 255);         // copy string (max 255 byte) from User space to Kernel space
                     SysPrintString(buffer);                         // print string
                     delete buffer;    
-                    IncreasePC();
                     
+                    IncreasePC();
                     return;
+
+                case SC_Exit:
+				case SC_Exec:
+				case SC_Join:
+				case SC_Create:
+				case SC_Open:
+				case SC_Read:
+				case SC_Write:
+				case SC_Seek:
+				case SC_Close:
+				case SC_ThreadFork:   
+				case SC_ThreadYield:
+				case SC_ExecV:	    
+				case SC_ThreadExit:   
+				case SC_ThreadJoin:   
+				case SC_Remove:
+					cerr << "Not yet implemented system call " << type << "\n";
+					SysHalt(); 
+					break;
 
                 default:
                     cerr << "Unexpected system call " << type << "\n";
                     break;
-                
-    
             }
+            // Co nen them increase PC tai day khong
             break;
+
+        case PageFaultException:
+            DEBUG(dbgSys, "\nNo valid translation found");
+            printf("\nNo valid translation found");
+            SysHalt();
+            break;
+
+        case ReadOnlyException:
+            DEBUG(dbgSys, "\nRead-only");
+            printf("\nRead-only");
+            SysHalt();
+            break;
+
+        case BusErrorException:
+            DEBUG(dbgSys, "\nInvalid physical address");
+            printf("\nInvalid physical address");
+            SysHalt();
+            break;
+
+        case AddressErrorException:
+            DEBUG(dbgSys, "\nUnaligned reference or one that was beyond the end of the address space");
+            printf("\nUnaligned reference or one that was beyond the end of the address space");
+            SysHalt();
+            break;
+            
+        case OverflowException:
+            DEBUG(dbgSys, "\nInteger overflow in add or sub");
+            printf("\nInteger overflow in add or sub");
+            SysHalt();
+            break;
+
+        case IllegalInstrException:
+            DEBUG(dbgSys, "\nUnimplemented or reserved instr");
+            printf("\nUnimplemented or reserved instr");
+            SysHalt();
+            break;
+
+        case NumExceptionTypes:
+            DEBUG(dbgSys, "\nNumber exception types");
+            printf("\nNumber Exception types");
+            SysHalt();
+            break;
+            
         default:
             cerr << "Unexpected user mode exception" << (int)which << "\n";
             break;
