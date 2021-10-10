@@ -23,9 +23,12 @@ int SysAdd(int op1, int op2) {
     return op1 + op2;
 }
 
+/*  Xu ly syscall RandomNumber
+    Output: sinh ngau nhieu so nguyen duong
+*/
 unsigned int SysRandomNumber() {
-    RandomInit(time(0));
-    return RandomNumber();
+    RandomInit(time(0));   // goi ham init random trong sysdep.cc void seed = time(0)
+    return RandomNumber();  
 }
 
 bool isDigit(char c) {
@@ -53,7 +56,7 @@ int SysReadNum() {
             return 0;
     }
 
-    // Neu chua ki tu khong phai so thi so khong phai so nguyen
+    // Neu chua ki tu khong phai so thi khong phai la so nguyen
     if (!isDigit(c))
         isInteger = false;
 
@@ -62,7 +65,7 @@ int SysReadNum() {
         num = num * 10 + c - '0';
         c = kernel->synchConsoleIn->GetChar();
 
-        // Neu chua ki tu khong phai so thi so khong phai so nguyen
+        // Neu chua ki tu khong phai so thi so khong phai la so nguyen
         if (!isDigit(c) && c != '\n' && c != ' ')
             isInteger = false;
     } while (c != '\n' && c != ' ');
@@ -112,27 +115,34 @@ char SysReadChar() {
     char c;
     c = kernel->synchConsoleIn->GetChar();
     return c;
-};
+}
 
 void SysPrintChar(char c) {
     kernel->synchConsoleOut->PutChar(c);
 }
 
+/*  Xu ly syscall ReadString
+    Input: buffer (char*), do dai toi da cua input
+    Ket qua doc duoc tra vao buffer
+*/
 void SysReadString(char* buffer, int length) {
     int idx;
     char ch;
     for (idx = 0; idx < length; ++idx)
         buffer[idx] = 0;
     for (idx = 0; idx < length;) {
-        do {
+        do { // bo qua cac ki tu EOF
             ch = kernel->synchConsoleIn->GetChar();
         } while (ch == EOF);
-        if (ch == '\001' || ch == '\n')
+        if (ch == '\001' || ch == '\n') // enter -> ket thuc nhap
             break;
         buffer[idx++] = ch;
     }
 }
 
+/*  Xu ly syscall PrintString
+    Input: buffer (char*) de in ra man hinh
+*/
 void SysPrintString(char* buffer) {
     int length = 0;
     while (buffer[length]) {
