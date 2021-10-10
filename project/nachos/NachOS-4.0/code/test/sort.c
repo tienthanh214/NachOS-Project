@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /* sort.c 
  *    Test program to sort a large number of integers.
  *
@@ -8,8 +7,7 @@
  */
 
 
-=======
->>>>>>> ce1592432317f0e669e063a79cedc6ded8536436
+
 #include "syscall.h"
 
 int A[100];
