@@ -145,7 +145,7 @@ void SysReadString(char* buffer, int length) {
 */
 void SysPrintString(char* buffer) {
     int length = 0;
-    while (buffer[length]) {
+    while (buffer[length]) { // loop until meet '\0'
         kernel->synchConsoleOut->PutChar(buffer[length++]);
     }
 }
