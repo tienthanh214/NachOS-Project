@@ -57,7 +57,7 @@ int SysReadNum() {
     if (!isDigit(c))
         isInteger = false;
 
-    // Chuyen chuoi ki tu thanh gi tri so
+    // Chuyen chuoi ki tu thanh gia tri so
     do {
         num = num * 10 + c - '0';
         c = kernel->synchConsoleIn->GetChar();
