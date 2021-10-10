@@ -164,6 +164,7 @@ ascii.o: ascii.c
 ascii: ascii.o start.o
 	$(LD) $(LDFLAGS) start.o ascii.o -o ascii.coff
 	$(COFF2NOFF) ascii.coff ascii
+	
 help.o: help.c
 	$(CC) $(CFLAGS) -c help.c
 help: help.o start.o
