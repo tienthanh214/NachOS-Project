@@ -41,16 +41,15 @@ int SysReadNum() {
     bool isSign = false;
     bool isInteger = true;
 
-    do {
+    do {    // ignore all white space
         c = kernel->synchConsoleIn->GetChar();
-
-        if (!isDigit(c) && c != '-' && c != ' ' && c != '\n')
-            isInteger = false;
-    } while (!isDigit(c) && c != '-');
+    } while (c == ' ' || c == '\n');
 
     if (c == '-') {
         isSign = true;
         c = kernel->synchConsoleIn->GetChar();
+        if (c == '\n' || c == ' ')      // when negative sign then white space
+            return 0;
     }
 
     if (!isDigit(c))

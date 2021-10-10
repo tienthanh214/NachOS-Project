@@ -24,12 +24,12 @@ int main() {
     }
 
 
-    PrintString("Enter array = ");
+    PrintString("Enter array: ");
     for (i = 0; i < n; ++i)
         A[i] = ReadNum();
     
     PrintString("Ascending/Descending enter [0/1]: ");
-    isAsc = ReadChar() == '0';
+    isAsc = ReadChar() == '0';  // if user endter 0 then asc else desc
 
     /*  sort integer array using Bubble sort algorithm */
     for (i = 0; i < n; ++i) {
