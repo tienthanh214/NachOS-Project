@@ -62,6 +62,7 @@ void Halt();
 
 
 /* ==================== 1 ========================== */
+// Nhung system call do sinh vien them vao
 int ReadNum();
 
 void PrintNum(int);

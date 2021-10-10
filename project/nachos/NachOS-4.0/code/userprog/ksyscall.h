@@ -34,49 +34,57 @@ bool isDigit(char c) {
     return false;
 }
 
+// Ham xu li cho system call ReadNum
 int SysReadNum() {
     int num = 0;
     char c;
     bool isSign = false;
     bool isInteger = true;
 
-    do {    // ignore all white space
+    do {    // bo qua cac ki tu khoang trang va xuong dong
         c = kernel->synchConsoleIn->GetChar();
     } while (c == ' ' || c == '\n');
 
+    // Xu li so am
     if (c == '-') {
         isSign = true;
         c = kernel->synchConsoleIn->GetChar();
-        if (c == '\n' || c == ' ')      // when negative sign then white space
+        if (c == '\n' || c == ' ')  // Tra ve 0 khi co dau cach sau dau '-'
             return 0;
     }
 
+    // Neu chua ki tu khong phai so thi so khong phai so nguyen
     if (!isDigit(c))
         isInteger = false;
 
+    // Chuyen chuoi ki tu thanh gia tri so
     do {
         num = num * 10 + c - '0';
         c = kernel->synchConsoleIn->GetChar();
 
+        // Neu chua ki tu khong phai so thi so khong phai so nguyen
         if (!isDigit(c) && c != '\n' && c != ' ')
             isInteger = false;
     } while (c != '\n' && c != ' ');
 
-    if (!isInteger)
+    if (!isInteger) // Neu khong phai la so nguyen thi tra ve 0
         return 0;
 
-    if (isSign)
+    if (isSign)     // Neu la so am
         num = -num;
 
     return num;
 }
 
+// Ham xu li cho system call PrintNum
 void SysPrintNum(int op1) {
+    // Neu la so 0 thi in ra so 0
     if (op1 == 0) {
         kernel->synchConsoleOut->PutChar('0');
         return;
     }
 
+    // Neu la so am thi in ra dau '-' truoc
     if (op1 < 0) {
         kernel->synchConsoleOut->PutChar('-');
         op1 = -op1;
@@ -86,6 +94,7 @@ void SysPrintNum(int op1) {
     int i = 0;
     int j, r;
 
+    // Chuyen gia tri tuyet doi thanh mang ki tu
     while (op1 != 0) {
         r = op1 % 10;
         arr[i] = r;
@@ -93,6 +102,7 @@ void SysPrintNum(int op1) {
         op1 = op1 / 10;
     }
 
+    // In mang ki tu cac so
     for (j = i - 1; j > -1; --j) {
         kernel->synchConsoleOut->PutChar('0' + arr[j]);
     }

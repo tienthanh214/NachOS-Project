@@ -1,5 +1,6 @@
 #include "syscall.h"
 
+// Cau h: In bang ma ASCII
 int main() {
     int i;
 
@@ -19,7 +20,7 @@ int main() {
     PrintString("Dec");
     PrintChar('\t');
     PrintString("Char");
-    
+
     PrintChar('\t');
     PrintChar('|');
     PrintChar('\t');
@@ -34,7 +35,7 @@ int main() {
     PrintString("------------------------");
     PrintChar('\n');
 
-    // In bang AsCII thanh 3 cot
+    // In bang ASCII thanh 3 cot
     
     for (i = 32; i < 64; ++i)     // Cac ki tu doc duoc tu 32 toi 126
     {
