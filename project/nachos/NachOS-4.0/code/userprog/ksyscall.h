@@ -99,17 +99,13 @@ void SysPrintNum(int op1) {
     }
 }
 
-char SysReadChar(){
-
+char SysReadChar() {
     char c;
     c = kernel->synchConsoleIn->GetChar();
     return c;
-
 };
 
-
-
-void SysPrintChar(char c){
+void SysPrintChar(char c) {
     kernel->synchConsoleOut->PutChar(c);
 }
 

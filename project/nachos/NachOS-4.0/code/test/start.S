@@ -90,7 +90,6 @@ PrintChar:
 	j 	$31
 	.end PrintChar
 
-
 	.globl RandomNum
 	.ent	RandomNum
 RandomNum:
@@ -114,7 +113,6 @@ PrintString:
 	syscall
 	j 	$31
 	.end PrintString
-
 
 	.globl Exit
 	.ent	Exitzz
