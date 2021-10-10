@@ -61,7 +61,8 @@ void IncreasePC() {
 }
 
 
-/*  Copy buffer from User space to Kernel memory space 
+/*  
+    Copy buffer from User space to Kernel memory space 
     Input:  User space address, length of buffer
     Output: Buffer 
 */
@@ -82,12 +83,12 @@ char* User2System(int virtualAddr, int limit) {
     return kernelBuffer;
 }
 
-/*  Copy buffer from Kernel space to User memory space  
+/*  
+    Copy buffer from Kernel space to User memory space  
     Input:  - address in user space
             - limit of buffer
             - buffer kernel memory
     Output: number of bytes copied
-
 */
 int System2User(int virtualAddr, int len, char* buffer) {
     if (len < 0) return -1;
@@ -243,44 +244,44 @@ void ExceptionHandler(ExceptionType which) {
             break;
 
         case PageFaultException:
-            DEBUG(dbgSys, "\nNo valid translation found");
-            printf("\nNo valid translation found");
+            DEBUG(dbgSys, "No valid translation found\n");
+            printf("No valid translation found\n");
             SysHalt();
             break;
 
         case ReadOnlyException:
-            DEBUG(dbgSys, "\nWrite attempted to page marked \"read-only\"");
-            printf("\nWrite attempted to page marked \"read-only\"");
+            DEBUG(dbgSys, "Write attempted to page marked \"read-only\"\n");
+            printf("Write attempted to page marked \"read-only\"\n");
             SysHalt();
             break;
 
         case BusErrorException:
-            DEBUG(dbgSys, "\nTranslation resulted in an invalid physical address");
-            printf("\nTranslation resulted in an invalid physical address");
+            DEBUG(dbgSys, "Translation resulted in an invalid physical address\n");
+            printf("Translation resulted in an invalid physical address\n");
             SysHalt();
             break;
 
         case AddressErrorException:
-            DEBUG(dbgSys, "\nUnaligned reference or one that was beyond the end of the address space");
-            printf("\nUnaligned reference or one that was beyond the end of the address space");
+            DEBUG(dbgSys, "Unaligned reference or one that was beyond the end of the address space\n");
+            printf("Unaligned reference or one that was beyond the end of the address space\n");
             SysHalt();
             break;
             
         case OverflowException:
-            DEBUG(dbgSys, "\nInteger overflow in add or sub");
-            printf("\nInteger overflow in add or sub");
+            DEBUG(dbgSys, "Integer overflow in add or sub\n");
+            printf("Integer overflow in add or sub\n");
             SysHalt();
             break;
 
         case IllegalInstrException:
-            DEBUG(dbgSys, "\nUnimplemented or reserved instr");
-            printf("\nUnimplemented or reserved instr");
+            DEBUG(dbgSys, "Unimplemented or reserved instr\n");
+            printf("Unimplemented or reserved instr\n");
             SysHalt();
             break;
 
         case NumExceptionTypes:
-            DEBUG(dbgSys, "\nNumber exception types");
-            printf("\nNumber Exception types");
+            DEBUG(dbgSys, "Number exception types\n");
+            printf("Number Exception types\n");
             SysHalt();
             break;
             
