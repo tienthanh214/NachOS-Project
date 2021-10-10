@@ -162,7 +162,7 @@ void ExceptionHandler(ExceptionType which) {
 
 					ASSERTNOTREACHED();					
 					break;
-
+                // xu ly syscall ReadChar
                 case SC_ReadChar:
                     char c; 
                     c = SysReadChar();			  //read a character
@@ -173,7 +173,7 @@ void ExceptionHandler(ExceptionType which) {
                     return;
                     ASSERTNOTREACHED();
                     break;
-
+                    // xu ly syscall PrintChar
                 case SC_PrintChar:
                     c = kernel->machine->ReadRegister(4);       //get the character to print from register 4
                     SysPrintChar(c);				//print character

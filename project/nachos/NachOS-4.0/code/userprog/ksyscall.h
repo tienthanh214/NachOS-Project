@@ -110,13 +110,13 @@ void SysPrintNum(int op1) {
         kernel->synchConsoleOut->PutChar('0' + arr[j]);
     }
 }
-
+// Xu ly syscall ReadChar
 char SysReadChar() {
     char c;
     c = kernel->synchConsoleIn->GetChar();
     return c;
 }
-
+// Xu ly syscall PrintChar
 void SysPrintChar(char c) {
     kernel->synchConsoleOut->PutChar(c);
 }
