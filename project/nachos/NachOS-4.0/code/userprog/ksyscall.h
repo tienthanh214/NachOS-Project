@@ -34,6 +34,7 @@ bool isDigit(char c) {
     return false;
 }
 
+// Ham xu li cho system call ReadNum
 int SysReadNum() {
     int num = 0;
     char c;
@@ -72,6 +73,7 @@ int SysReadNum() {
     return num;
 }
 
+// Ham xu li cho system call PrintNum
 void SysPrintNum(int op1) {
     if (op1 == 0) {
         kernel->synchConsoleOut->PutChar('0');

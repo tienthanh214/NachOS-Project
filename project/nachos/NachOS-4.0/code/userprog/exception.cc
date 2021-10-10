@@ -140,6 +140,7 @@ void ExceptionHandler(ExceptionType which) {
                     ASSERTNOTREACHED();
                     break;
                 
+                // Xu ly system call ReadNum 
                 case SC_ReadNum:
 					int num;
                     num = SysReadNum();                             // system read integer number
@@ -151,6 +152,7 @@ void ExceptionHandler(ExceptionType which) {
 					ASSERTNOTREACHED();
 					break;
 				
+                // Xu ly system call PrintNum
 				case SC_PrintNum:
                     num = (int)kernel->machine->ReadRegister(4);    // get the number to print from register 4
 					SysPrintNum(num);                               // system print number
@@ -217,6 +219,7 @@ void ExceptionHandler(ExceptionType which) {
                     IncreasePC();
                     return;
 
+                // Nhung system call chua duoc xu li thi se in ra thong bao loi
                 case SC_Exit:
 				case SC_Exec:
 				case SC_Join:
@@ -240,9 +243,9 @@ void ExceptionHandler(ExceptionType which) {
                     cerr << "Unexpected system call " << type << "\n";
                     break;
             }
-            // Co nen them increase PC tai day khong
             break;
 
+        // Nhung exception khac thi in ra mot thong bao loi
         case PageFaultException:
             DEBUG(dbgSys, "No valid translation found\n");
             printf("No valid translation found\n");
