@@ -1,3 +1,13 @@
+/* sort.c 
+ *    Test program to sort a large number of integers.
+ *
+ *    User input the length of array, and the array, and order option
+ *
+ *    Print out the sorted array (ascending or descending)
+ */
+
+
+
 #include "syscall.h"
 
 int A[100];
@@ -9,7 +19,7 @@ int main() {
     n = ReadNum();
 
     if (n < 1 || n > 100) {
-        PrintString(" n mush be in range [1, 100]\n");
+        PrintString(" n mush be in range [1, 100] !!!\n");
         Halt();
     }
 
@@ -21,9 +31,7 @@ int main() {
     PrintString("Ascending/Descending enter [0/1]: ");
     isAsc = ReadChar() == '0';
 
-    /*  sort integer array using Bubble sort algorithm
-        order by function pointer compare
-    */
+    /*  sort integer array using Bubble sort algorithm */
     for (i = 0; i < n; ++i) {
         for (j = n - 1; j > i; --j) 
             if (isAsc ? A[j - 1] > A[j] : A[j - 1] < A[j]) {
