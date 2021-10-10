@@ -11,7 +11,7 @@ int main(){
 =================================================================");
     PrintString("\n
 command '-x ascii' : ascii program print the ascii character table.
-command '-x sort' : sort program sort an integer array by using bubble sort.\n
+command '-x sort'  : sort program sort an integer array by using bubble sort.\n
 ");
     Halt();
 }
