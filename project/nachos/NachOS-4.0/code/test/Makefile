@@ -113,7 +113,7 @@ PROGRAMS = unknownhost
 else
 # change this if you create a new test program!
 
-PROGRAMS = add halt shell matmult sort segments help ascii
+PROGRAMS = add halt shell matmult sort segments help ascii testsyscall
 
 endif
 
@@ -170,6 +170,13 @@ help.o: help.c
 help: help.o start.o
 	$(LD) $(LDFLAGS) start.o help.o -o help.coff
 	$(COFF2NOFF) help.coff help
+
+testsyscall.o: testsyscall.c
+	$(CC) $(CFLAGS) -c testsyscall.c
+testsyscall: testsyscall.o start.o
+	$(LD) $(LDFLAGS) start.o testsyscall.o -o testsyscall.coff
+	$(COFF2NOFF) testsyscall.coff testsyscall
+
 
 clean:
 	$(RM) -f *.o *.ii
