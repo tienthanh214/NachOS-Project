@@ -173,7 +173,7 @@ void ExceptionHandler(ExceptionType which) {
                     return;
                     ASSERTNOTREACHED();
                     break;
-                    // xu ly syscall PrintChar
+                // xu ly syscall PrintChar
                 case SC_PrintChar:
                     c = kernel->machine->ReadRegister(4);       //get the character to print from register 4
                     SysPrintChar(c);				//print character
@@ -183,7 +183,7 @@ void ExceptionHandler(ExceptionType which) {
                     return;
                     ASSERTNOTREACHED();
                     break;
-                    
+                // xu ly syscall RandomNum
                 case SC_RandomNum:
                     kernel->machine->WriteRegister(2, SysRandomNumber());   // write result to register 2
                     
@@ -192,7 +192,7 @@ void ExceptionHandler(ExceptionType which) {
 
                     ASSERTNOTREACHED();
                     break;
-
+                // xu ly syscall ReadString
                 case SC_ReadString:
                     int virtualAddr;
                     char* buffer;
@@ -209,7 +209,7 @@ void ExceptionHandler(ExceptionType which) {
 
                     ASSERTNOTREACHED();
                     break;
-
+                // xu ly syscall PrintString
                 case SC_PrintString:
                     virtualAddr = kernel->machine->ReadRegister(4); // get address of buffer
                     buffer = User2System(virtualAddr, 255);         // copy string (max 255 byte) from User space to Kernel space

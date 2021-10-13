@@ -8,33 +8,8 @@
 #include "syscall.h"
 
 int main() {
-    // char a[30];
-    // int result;
-    // int k = 0, tmp, i;
-    
-    // result = Add(42, 223);
-    // PrintNum(result);
-    // result = RandomNum();
-    // PrintChar('\n');
-    // PrintNum(result);
-
-    // // PrintChar('a');
-
-    // PrintString("\nEnter a string: ");
-    // ReadString(a, 20);
-    // PrintString("Your string: ");
-    // PrintString(a);
-    // PrintString("\n");
-    int x, y;
-    char c, d;
-    d = ReadChar();
-    x = ReadNum();
-    c = ReadChar();
-    y = ReadNum();
-    PrintChar(d);
-    PrintNum(x); 
-    PrintChar(c);
-    PrintNum(y);
+    int result;
+    result = Add(12, 23);
     Halt();
 
     /* not reached */

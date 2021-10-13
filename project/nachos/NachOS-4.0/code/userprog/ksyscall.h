@@ -93,7 +93,7 @@ void SysPrintNum(int op1) {
         op1 = -op1;
     }
 
-    char arr[11];
+    char arr[10];
     int i = 0;
     int j, r;
 
