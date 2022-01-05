@@ -256,7 +256,7 @@ main(int argc, char **argv)
     kernel = new Kernel(argc, argv);
 
     kernel->Initialize();
-
+    
     // create bitmap
     gPhysPageBitMap = new Bitmap(256);
     // create semaphore allow 1 process load
