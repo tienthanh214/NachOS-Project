@@ -46,10 +46,16 @@
 #include "openfile.h"
 #include "sysdep.h"
 
+/*
+    19CNTN - HCMUS
+*/
+
 // global variables
 Kernel *kernel;
 Debug *debug;
 
+Bitmap *gPhysPageBitMap; // quan ly cac frames
+Semaphore *addrLock;    // semaphore quan ly load process
 
 //----------------------------------------------------------------------
 // Cleanup
@@ -251,6 +257,11 @@ main(int argc, char **argv)
 
     kernel->Initialize();
 
+    // create bitmap
+    gPhysPageBitMap = new Bitmap(256);
+    // create semaphore allow 1 process load
+    addrLock = new Semaphore("addrLock", 1);
+
     CallOnUserAbort(Cleanup);		// if user hits ctl-C
 
     // at this point, the kernel is ready to do something
@@ -288,8 +299,8 @@ main(int argc, char **argv)
       AddrSpace *space = new AddrSpace;
       ASSERT(space != (AddrSpace *)NULL);
       if (space->Load(userProgName)) {  // load the program into the space
-	space->Execute();              // run the program
-	ASSERTNOTREACHED();            // Execute never returns
+        space->Execute();              // run the program
+        ASSERTNOTREACHED();            // Execute never returns
       }
     }
 
