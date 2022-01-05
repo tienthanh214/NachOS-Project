@@ -70,6 +70,8 @@ SwapHeader (NoffHeader *noffH)
 //	only uniprogramming, and we have a single unsegmented page table
 //----------------------------------------------------------------------
 
+#include "stable.h"
+
 AddrSpace::AddrSpace()
 {
     numPages = 0;

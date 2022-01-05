@@ -1,0 +1,4 @@
+*.o
+*.coff
+*.ii
+.vscode/*
