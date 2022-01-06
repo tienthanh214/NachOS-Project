@@ -2,7 +2,7 @@
 #include "main.h"
 #include "openfile.h"
 
-#define For(i, a, b) for(int i = (a); i < b; ++i)
+#define For(i, a, b) for (int i = (a); i < b; ++i)
 
 PTable::PTable(int size)
 {
@@ -17,9 +17,6 @@ PTable::PTable(int size)
         pcb[i] = 0;
     }
     bm->Mark(0);
-    pcb[0] = new PCB(0);
-    pcb[0]->SetFileName("./test/scheduler");
-    pcb[0]->parentID = -1;
 }
 
 PTable::~PTable()
@@ -48,7 +45,7 @@ int PTable::ExecUpdate(char *name)
         return -1;
     }
 
-    if (strcmp(name, "./test/scheduler") == 0 || strcmp(name, kernel->currentThread->getName()) == 0)
+    if (strcmp(name, kernel->currentThread->getName()) == 0)
     {
         printf("\nPTable::Exec : Can't not execute itself.\n");
         bmsem->V();
@@ -138,7 +135,7 @@ void PTable::Remove(int pid)
         delete pcb[pid];
 }
 
-char* PTable::GetFileName(int id)
+char *PTable::GetFileName(int id)
 {
     return (pcb[id]->GetFileName());
 }
