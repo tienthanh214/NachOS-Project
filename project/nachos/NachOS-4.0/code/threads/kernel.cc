@@ -101,6 +101,7 @@ Kernel::Initialize()
     synchConsoleIn = new SynchConsoleInput(consoleIn); // input from stdin
     synchConsoleOut = new SynchConsoleOutput(consoleOut); // output to stdout
     synchDisk = new SynchDisk();    //
+    pTab = new PTable(10);          // initialize the ptable
 #ifdef FILESYS_STUB
     fileSystem = new FileSystem();
 #else

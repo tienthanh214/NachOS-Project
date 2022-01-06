@@ -7,6 +7,9 @@
 
 #define MAX_PROCESS 10
 
+class PCB;
+class Semaphore;
+
 class PTable
 {
 private:
@@ -26,7 +29,7 @@ public:
     bool IsExist(int pid);
     int GetFreeSlot();
     void Remove(int pid);
-    char *GetFileName(int id);
+    char* GetFileName(int id);
 };
 
 #endif

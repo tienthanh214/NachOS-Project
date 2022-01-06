@@ -45,6 +45,7 @@ class AddrSpace {
     unsigned int numPages;		// Number of pages in the virtual 
 					// address space
 
+  public: 
     void InitRegisters();		// Initialize user-level CPU registers,
 					// before jumping to user code
 

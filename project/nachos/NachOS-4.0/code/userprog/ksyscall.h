@@ -150,4 +150,30 @@ void SysPrintString(char* buffer) {
     }
 }
 
+/*  Xu ly syscall Exec
+    Input: buffer (char*) de in ra man hinh
+*/
+void SysExec(char* name) {
+    if (name == NULL) {
+        DEBUG('a', "\n Not enough memory in System");
+        printf("\n Not enough memory in System");
+        kernel->machine->WriteRegister(2, -1);
+        //IncreasePC();
+        return;
+    }
+
+    OpenFile *oFile = kernel->fileSystem->Open(name);
+    if (oFile == NULL) {
+        printf("\nExec:: Can't open this file.");
+        kernel->machine->WriteRegister(2, -1);
+        //IncreasePC();
+        return;
+    }
+
+    delete oFile;
+    
+    int id = kernel->pTab->ExecUpdate(name);
+    kernel->machine->WriteRegister(2, id);
+}
+
 #endif /* ! __USERPROG_KSYSCALL_H__ */

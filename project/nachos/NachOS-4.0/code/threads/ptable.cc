@@ -2,13 +2,14 @@
 #include "main.h"
 #include "openfile.h"
 
-#define For(i, a, b) for (int i = (a); i < b; ++i)
+#define For(i, a, b) for(int i = (a); i < b; ++i)
 
 PTable::PTable(int size)
 {
     if (size < 0)
         return;
     psize = size;
+    // Khoi tao bm va bmsem de su dung
     bm = new Bitmap(size);
     bmsem = new Semaphore("bmsem", 1);
     For(i, 0, MAX_PROCESS)
@@ -130,12 +131,14 @@ bool PTable::IsExist(int pid)
 
 void PTable::Remove(int pid)
 {
+    // Xoa tien trinh tren bitmap
     bm->Clear(pid);
+    // Xoa tien trinh tren mang quan li
     if (pcb[pid] != 0)
         delete pcb[pid];
 }
 
-char *PTable::GetFileName(int id)
+char* PTable::GetFileName(int id)
 {
     return (pcb[id]->GetFileName());
 }
