@@ -101,7 +101,12 @@ Kernel::Initialize()
     synchConsoleIn = new SynchConsoleInput(consoleIn); // input from stdin
     synchConsoleOut = new SynchConsoleOutput(consoleOut); // output to stdout
     synchDisk = new SynchDisk();    //
-    pTab = new PTable(10);          // initialize the ptable
+    // init data for multiprogramming
+    gPhysPageBitMap = new Bitmap(256);
+    addrLock = new Semaphore("addrLock", 1);
+    pTab = new PTable(MAX_PROCESS);
+    semTab = new STable();
+
 #ifdef FILESYS_STUB
     fileSystem = new FileSystem();
 #else

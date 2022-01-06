@@ -113,7 +113,7 @@ PROGRAMS = unknownhost
 else
 # change this if you create a new test program!
 
-PROGRAMS = add halt shell matmult sort segments help ascii testsyscall
+PROGRAMS = add halt shell matmult sort segments help ascii testsyscall ping pong
 
 endif
 
@@ -177,6 +177,18 @@ testsyscall: testsyscall.o start.o
 	$(LD) $(LDFLAGS) start.o testsyscall.o -o testsyscall.coff
 	$(COFF2NOFF) testsyscall.coff testsyscall
 
+
+ping.o: ping.c
+	$(CC) $(CFLAGS) -c ping.c
+ping: ping.o start.o
+	$(LD) $(LDFLAGS) start.o ping.o -o ping.coff
+	$(COFF2NOFF) ping.coff ping
+
+pong.o: pong.c
+	$(CC) $(CFLAGS) -c pong.c
+pong: pong.o start.o
+	$(LD) $(LDFLAGS) start.o pong.o -o pong.coff
+	$(COFF2NOFF) pong.coff pong
 
 clean:
 	$(RM) -f *.o *.ii

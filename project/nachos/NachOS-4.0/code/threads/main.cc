@@ -53,10 +53,7 @@
 // global variables
 Kernel *kernel;
 Debug *debug;
-
-Bitmap *gPhysPageBitMap; // quan ly cac frames
-Semaphore *addrLock;    // semaphore quan ly load process
-
+           
 //----------------------------------------------------------------------
 // Cleanup
 //	Delete kernel data structures; called when user hits "ctl-C".
@@ -252,16 +249,12 @@ main(int argc, char **argv)
     debug = new Debug(debugArg);
     
     DEBUG(dbgThread, "Entering main");
+    // init global variable
 
     kernel = new Kernel(argc, argv);
 
     kernel->Initialize();
     
-    // create bitmap
-    gPhysPageBitMap = new Bitmap(256);
-    // create semaphore allow 1 process load
-    addrLock = new Semaphore("addrLock", 1);
-
     CallOnUserAbort(Cleanup);		// if user hits ctl-C
 
     // at this point, the kernel is ready to do something

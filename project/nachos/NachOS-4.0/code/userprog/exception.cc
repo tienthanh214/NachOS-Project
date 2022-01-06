@@ -48,8 +48,6 @@
 //	is in machine.h.
 //----------------------------------------------------------------------
 
-#define MAX_FILENAME_LENGTH 32
-
 /* Increase program counter */
 void IncreasePC()
 {
@@ -212,7 +210,7 @@ void ExceptionHandler(ExceptionType which)
             buffer = User2System(virtualAddr, length);      // copy string from User space to Kernel space
             SysReadString(buffer, length);                  // system read string
             System2User(virtualAddr, length, buffer);       // return string to User space
-            delete buffer;
+            delete[] buffer;
 
             IncreasePC();
             return;
@@ -224,26 +222,45 @@ void ExceptionHandler(ExceptionType which)
             virtualAddr = kernel->machine->ReadRegister(4); // get address of buffer
             buffer = User2System(virtualAddr, 255);         // copy string (max 255 byte) from User space to Kernel space
             SysPrintString(buffer);                         // print string
-            delete buffer;
+            delete[] buffer;
 
             IncreasePC();
             return;
 
+            ASSERTNOTREACHED();
+            break;
+
         // Nhung system call chua duoc xu li thi se in ra thong bao loi
-        case SC_Exit:
-            // Todo
         case SC_Exec:
             virtualAddr = kernel->machine->ReadRegister(4);
             char *name;
             name = User2System(virtualAddr, MAX_FILENAME_LENGTH + 1);
             SysExec(name);
             if (name != NULL) delete[] name;
-
             IncreasePC();
             return;
 
+            ASSERTNOTREACHED();
+            break;
+
         case SC_Join:
-            // Todo
+            int pid;
+            pid = kernel->machine->ReadRegister(4);
+            kernel->machine->WriteRegister(2, SysJoin(pid));
+            IncreasePC();
+            return;
+
+            ASSERTNOTREACHED();
+            break;
+        case SC_Exit:
+            int exitCode;
+            exitCode = kernel->machine->ReadRegister(4);
+            SysExit(exitCode);
+            IncreasePC();
+            return;
+
+            ASSERTNOTREACHED();
+            break;
         case SC_Create:
         case SC_Open:
         case SC_Read:

@@ -1,17 +1,21 @@
+/*  ptable.h
+    Data structure for manage process
+        handle system call
+*/
+
 #ifndef PTABLE_H
 #define PTABLE_H
 
+#include "bitmap.h"
 #include "pcb.h"
 #include "synch.h"
-#include "bitmap.h"
 
 #define MAX_PROCESS 10
 
 class PCB;
 class Semaphore;
 
-class PTable
-{
+class PTable {
 private:
     Bitmap *bm;
     PCB *pcb[MAX_PROCESS];
@@ -22,6 +26,7 @@ public:
     PTable(int size);
     ~PTable();
 
+
     int ExitUpdate(int ec);
     int ExecUpdate(char *name);
     int JoinUpdate(int id);
@@ -29,7 +34,10 @@ public:
     bool IsExist(int pid);
     int GetFreeSlot();
     void Remove(int pid);
-    char* GetFileName(int id);
+    char *GetFileName(int id);
+
+private:
+    void initStartProcess(char* name);
 };
 
 #endif

@@ -11,10 +11,12 @@
 #ifndef STABLE_H
 #define STABLE_H
 
-#include "synch.h"
 #include "bitmap.h"
+#include "synch.h"
 
 const unsigned int MAX_SEMAPHORE = 10;
+
+class Semaphore;
 
 class Sem {
 private:

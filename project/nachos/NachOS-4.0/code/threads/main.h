@@ -11,16 +11,11 @@
 #include "copyright.h"
 #include "debug.h"
 #include "kernel.h"
-#include "bitmap.h"
-#include "synch.h"
 
 class Semaphore;
 
 extern Kernel *kernel;
 extern Debug *debug;
-
-extern Bitmap *gPhysPageBitMap;
-extern Semaphore *addrLock;
 
 #endif // MAIN_H
 
