@@ -171,7 +171,7 @@ int readString(char *buffer, int length)
         { // bo qua cac ki tu EOF
             ch = kernel->synchConsoleIn->GetChar();
         } while (ch == EOF);
-        if ( ch == '\n') // enter -> ket thuc nhap
+        if (ch == '\n') // enter -> ket thuc nhap
             break;
         buffer[idx++] = ch;
     }
@@ -185,11 +185,12 @@ int readString(char *buffer, int length)
 void SysPrintString(char *buffer)
 {
     int length = 0;
-    while (buffer[length])
+    while (buffer[length]) // loop until meet '\0'
     {
         kernel->synchConsoleOut->PutChar(buffer[length++]);
     }
 }
+
 void SysCreateFile(char *filename)
 {
     if (strlen(filename) == 0)
@@ -289,6 +290,7 @@ void SysOpen(char *filename, int type)
     kernel->machine->WriteRegister(2, -1); //Khong mo duoc file return -1
     return;
 }
+
 void SysClose(int id)
 {
     if (id >= 0 && id <= 9) //Chi xu li khi fid nam trong [0, 14]
@@ -304,4 +306,68 @@ void SysClose(int id)
     kernel->machine->WriteRegister(2, -1);
     return;
 }
+
+/* Xu ly syscall CreateSemaphore
+    input: semaphore name, value
+    output -1 neu loi nguoc lai tra ve id cua semaphore
+*/
+int SysCreateSemaphore(char *name, int semVal)
+{
+    if (name == NULL)
+    {
+        DEBUG('a', "\n Not enough memory in System");
+        printf("\n Not enough memory in System");
+        return -1;
+    }
+    int res = kernel->semTab->Create(name, semVal);
+    if (res == -1)
+    {
+        printf("\n Can't create semaphore.");
+        return -1;
+    }
+    return res;
+}
+
+/* Xu ly syscall Wait
+    input: semaphore name
+    output -1 neu loi nguoc lai tra ve id cua semaphore
+*/
+int SysWait(char *name)
+{
+    if (name == NULL)
+    {
+        DEBUG('a', "\n Not enough memory in System");
+        printf("\n Not enough memory in System");
+        return -1;
+    }
+    int res = kernel->semTab->Wait(name);
+    if (res == -1)
+    {
+        printf("\nSemaphore %s doesn't exist.", name);
+        return -1;
+    }
+    return res;
+}
+
+/* Xu ly syscall Signal
+    input: semaphore name
+    output -1 neu loi nguoc lai tra ve id cua semaphore
+*/
+int SysSignal(char *name)
+{
+    if (name == NULL)
+    {
+        DEBUG('a', "\n Not enough memory in System");
+        printf("\n Not enough memory in System");
+        return -1;
+    }
+    int res = kernel->semTab->Signal(name);
+    if (res == -1)
+    {
+        printf("\nSemaphore %s doesn't exist.", name);
+        return -1;
+    }
+    return res;
+}
+
 #endif /* ! __USERPROG_KSYSCALL_H__ */

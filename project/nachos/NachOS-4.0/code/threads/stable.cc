@@ -32,7 +32,7 @@ void Sem::signal() {
 // --------- STable implementation ----------
 STable::STable() {
     this->mSemBitMap = new Bitmap(MAX_SEMAPHORE);
-    for (int i = 0; i < MAX_SEMAPHORE; ++i) {
+    for (unsigned int i = 0; i < MAX_SEMAPHORE; ++i) {
         semTable[i] = NULL;
     }
 }

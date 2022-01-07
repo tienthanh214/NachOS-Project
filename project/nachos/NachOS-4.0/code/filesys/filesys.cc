@@ -254,10 +254,7 @@ FileSystem::Open(char *name)
 
 OpenFile* FileSystem::Open(char *name, int type)
 {
-    cerr<<"vao day";
 	int freeSlot = this->FindFreeSlot();
-    cerr<<freeSlot;
-    cerr<<name;
 	Directory *directory = new Directory(NumDirEntries);
 	OpenFile *openFile = NULL;
 	int sector;

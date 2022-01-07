@@ -260,15 +260,39 @@ void ExceptionHandler(ExceptionType which)
             //break;
             //Tao file thanh cong
         }
+        // case SC_Open:
+        // {
+        //     int virtAddr = kernel->machine->ReadRegister(4); // Lay dia chi cua tham so name tu thanh ghi so 4
+        //     int type = kernel->machine->ReadRegister(5);     // Lay tham so type tu thanh ghi so 5
+        //     char *filename;
+        //     filename = User2System(virtAddr, MaxFileLength); // Copy chuoi tu vung nho User Space sang System Space voi bo dem name dai MaxFileLength
+        //     SysOpen(filename, type);                         //Kiem tra xem OS con mo dc file khong
+        //     delete[] filename;
+        // }
+        // case SC_CreateFile:
+        // {
+        //     // Input: Dia chi tu vung nho user cua ten file
+        //     // Output: -1 = Loi, 0 = Thanh cong
+        //     // Chuc nang: Tao ra file voi tham so la ten file
+        //     int virtAddr;
+        //     char* filename;
+        //     virtAddr = kernel -> machine->ReadRegister(4); //Doc dia chi cua file tu thanh ghi R4
+        //     filename = User2System(virtAddr, MAX_FILENAME_LENGTH + 1);
+        //     SysCreateFile(filename);
+        //     delete[] filename;
+        //     IncreasePC();
+        //     return;
+        //     //break;
+        // }
+        // //Tao file thanh cong
         case SC_Open:
         {
             int virtAddr = kernel->machine->ReadRegister(4); // Lay dia chi cua tham so name tu thanh ghi so 4
             int type = kernel->machine->ReadRegister(5);     // Lay tham so type tu thanh ghi so 5
             char *filename;
-            filename = User2System(virtAddr, MaxFileLength); // Copy chuoi tu vung nho User Space sang System Space voi bo dem name dai MaxFileLength
-            SysOpen(filename, type);                         //Kiem tra xem OS con mo dc file khong
+            filename = User2System(virtAddr, MAX_FILENAME_LENGTH + 1); // Copy chuoi tu vung nho User Space sang System Space voi bo dem name dai MaxFileLength
+            SysOpen(filename, type);                                   //Kiem tra xem OS con mo dc file khong
             delete[] filename;
-
             IncreasePC();
             return;
             break;
@@ -295,6 +319,7 @@ void ExceptionHandler(ExceptionType which)
             ASSERTNOTREACHED();
             break;
         }
+        // xu ly syscall Join
         case SC_Join:
         {
             int pid;
@@ -306,6 +331,7 @@ void ExceptionHandler(ExceptionType which)
             ASSERTNOTREACHED();
             break;
         }
+        // xu ly syscall Exit
         case SC_Exit:
         {
             int exitCode;
@@ -316,6 +342,42 @@ void ExceptionHandler(ExceptionType which)
 
             ASSERTNOTREACHED();
             break;
+        }
+        case SC_CreateSemaphore:
+        {
+            int virtualAddr = kernel->machine->ReadRegister(4);
+            int semVal = kernel->machine->ReadRegister(5);
+            char *name = User2System(virtualAddr, MAX_FILENAME_LENGTH + 1);
+            int result = SysCreateSemaphore(name, semVal);
+            if (name != NULL)
+                delete[] name;
+            // ghi ket qua tra ve
+            kernel->machine->WriteRegister(2, result);
+            IncreasePC();
+            return;
+
+            ASSERTNOTREACHED();
+            break;
+        }
+        case SC_Wait:
+        {
+            int virtualAddr = kernel->machine->ReadRegister(4);
+            char *name = User2System(virtualAddr, MAX_FILENAME_LENGTH + 1);
+            int result = SysWait(name);
+
+            kernel->machine->WriteRegister(2, result);
+            IncreasePC();
+            return;
+        }
+        case SC_Signal:
+        {
+            int virtualAddr = kernel->machine->ReadRegister(4);
+            char *name = User2System(virtualAddr, MAX_FILENAME_LENGTH + 1);
+            int result = SysSignal(name);
+
+            kernel->machine->WriteRegister(2, result);
+            IncreasePC();
+            return;
         }
         case SC_Read:
         {

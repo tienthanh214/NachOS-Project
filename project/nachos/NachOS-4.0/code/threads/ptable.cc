@@ -14,7 +14,7 @@ PTable::PTable(int size) {
     bmsem = new Semaphore("bmsem", 1);
     for (int i = 0; i < psize; ++i)
         pcb[i] = 0;
-    initStartProcess("./test/testsyscall");
+    // initStartProcess(".");
 }
 
 void PTable::initStartProcess(char* name) {
@@ -73,7 +73,6 @@ int PTable::ExecUpdate(char *name) {
     // printf("ptable: %d %d %d\n", index, pcb[index]->parentID, pid);
 
     bmsem->V();
-
     return pid;
 }
 
