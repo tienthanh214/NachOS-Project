@@ -20,10 +20,16 @@ int main()
     while (err != END_OF_FILE)
     {
         err = ReadInt(id, &cnt);
-        PrintNum(cnt);
-        PrintChar(' ');
         if (err == END_OF_LINE)
+        {
+            PrintNum(cnt);
             PrintChar('\n');
+        }
+        else if (err == HEAD_OF_LINE)
+        {
+            PrintNum(cnt);
+            PrintChar(' ');
+        }
     }
 
     Close(id);
