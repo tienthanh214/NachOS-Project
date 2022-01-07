@@ -23,10 +23,7 @@ int main()
         PrintNum(cnt);
         PrintChar(' ');
         if (err == END_OF_LINE)
-        {
             PrintChar('\n');
-        }
-        
     }
 
     Close(id);

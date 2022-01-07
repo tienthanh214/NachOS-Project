@@ -26,7 +26,8 @@ int ReadInt(int id, int *num)
     do 
     {
         err = Read(&c, 1, id);
-        if (err == END_OF_FILE) return END_OF_FILE;
+        if (err == END_OF_FILE) 
+            return END_OF_FILE;
     } while (c == ' ' || c == '\n');
     
 
@@ -34,9 +35,11 @@ int ReadInt(int id, int *num)
     {
         isSign = true;
         Read(&c, 1, id);
-        if (c == '\n' || c == ' ') return 0;
+        if (c == '\n' || c == ' ')
+            return 0;
     }
-    if (!isDigit(c)) isInteger = false;
+    if (!isDigit(c)) 
+        isInteger = false;
 
     do
     {
@@ -49,9 +52,10 @@ int ReadInt(int id, int *num)
             isInteger = false;
     } while (c != '\n' && c != ' ' && err != END_OF_FILE);
 
-    if (!isInteger) return 0;
-    if (isSign) *num = -(*num);
-
+    if (!isInteger) 
+        return 0;
+    if (isSign) 
+        *num = -(*num);
     return err;
 }
 
