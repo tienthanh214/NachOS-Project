@@ -159,6 +159,26 @@ void SysReadString(char *buffer, int length)
     }
 }
 
+int readString(char *buffer, int length)
+{
+    int idx;
+    char ch;
+    for (idx = 0; idx < length; ++idx)
+        buffer[idx] = 0;
+    for (idx = 0; idx < length;)
+    {
+        do
+        { // bo qua cac ki tu EOF
+            ch = kernel->synchConsoleIn->GetChar();
+        } while (ch == EOF);
+        if ( ch == '\n') // enter -> ket thuc nhap
+            break;
+        buffer[idx++] = ch;
+    }
+    buffer[idx++] = '\0';
+    return idx;
+}
+
 /*  Xu ly syscall PrintString
     Input: buffer (char*) de in ra man hinh
 */
@@ -201,8 +221,10 @@ void SysCreateFile(char *filename)
 /*  Xu ly syscall Exec
     Input: buffer (char*) ten cua process
 */
-void SysExec(char* name) {
-    if (name == NULL) {
+void SysExec(char *name)
+{
+    if (name == NULL)
+    {
         DEBUG('a', "\n Not enough memory in System");
         printf("\n Not enough memory in System");
         kernel->machine->WriteRegister(2, -1);
@@ -210,7 +232,8 @@ void SysExec(char* name) {
     }
 
     OpenFile *oFile = kernel->fileSystem->Open(name);
-    if (oFile == NULL) {
+    if (oFile == NULL)
+    {
         printf("\nExec:: Can't open this file.");
         kernel->machine->WriteRegister(2, -1);
         return;
@@ -223,14 +246,16 @@ void SysExec(char* name) {
 /* Xu ly syscall Join
     Input: pid tien trinh cha join 
 */
-int SysJoin(int pid) {
+int SysJoin(int pid)
+{
     return kernel->pTab->JoinUpdate(pid);
 }
 
 /* Xu ly syscall Exit
     Input: exit code
 */
-void SysExit(int ec) {
+void SysExit(int ec)
+{
     kernel->pTab->ExitUpdate(ec);
     kernel->currentThread->FreeSpace();
     kernel->currentThread->Finish();
@@ -270,7 +295,7 @@ void SysClose(int id)
     {
         if (kernel->fileSystem->openf[id]) //neu mo file thanh cong
         {
-            delete kernel->fileSystem->openf[id];  //Xoa vung nho luu tru file
+            delete kernel->fileSystem->openf[id]; //Xoa vung nho luu tru file
             kernel->fileSystem->openf[id] = NULL; //Gan vung nho NULL
             kernel->machine->WriteRegister(2, 0);
             return;

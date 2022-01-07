@@ -7,15 +7,23 @@
 
 #include "syscall.h"
 
-int main() {
-   
-    CreateFile("test.txt");
-    //
-  
-    PrintNum(Open("test.txt",0));
-    Close(Open("test.txt",0));
-    PrintString("closed file");
-    Halt();
+int main()
+{
+    char* buf;
+    int id, i, cnt;
+    
+    // CreateFile("test.txt");
 
+    id = Open("test.txt", 0);
+    PrintNum(id);
+    cnt = Read(buf, 50, id);
+    PrintNum(cnt);
+    PrintChar('\n');
+    PrintString(buf);
+    
+
+    Close(id);
+
+    Halt();
     /* not reached */
 }
