@@ -108,7 +108,7 @@ Kernel::Initialize()
     semTab = new STable();
 
 #ifdef FILESYS_STUB
-    fileSystem = new FileSystem();
+    fileSystem = new FileSystem(true);
 #else
     fileSystem = new FileSystem(formatFlag);
 #endif // FILESYS_STUB

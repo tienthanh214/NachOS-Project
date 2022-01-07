@@ -25,6 +25,8 @@
 #include "main.h"
 #include "syscall.h"
 #include "ksyscall.h"
+
+#define MaxFileLength 32
 //----------------------------------------------------------------------
 // ExceptionHandler
 // 	Entry point into the Nachos kernel.  Called when a user program
@@ -177,27 +179,26 @@ void ExceptionHandler(ExceptionType which)
             kernel->machine->WriteRegister(2, c); //write the return value to register 2
 
             IncreasePC();
-            return;
 
+            return;
             ASSERTNOTREACHED();
             break;
-        // xu ly syscall PrintChar
+            // xu ly syscall PrintChar
         case SC_PrintChar:
             c = kernel->machine->ReadRegister(4); //get the character to print from register 4
             SysPrintChar(c);                      //print character
 
             IncreasePC();
-            return;
 
+            return;
             ASSERTNOTREACHED();
             break;
-        // xu ly syscall RandomNum
+
         case SC_RandomNum:
             kernel->machine->WriteRegister(2, SysRandomNumber()); // write result to register 2
 
             IncreasePC();
             return;
-
             ASSERTNOTREACHED();
             break;
         // xu ly syscall ReadString
@@ -210,7 +211,7 @@ void ExceptionHandler(ExceptionType which)
             buffer = User2System(virtualAddr, length);      // copy string from User space to Kernel space
             SysReadString(buffer, length);                  // system read string
             System2User(virtualAddr, length, buffer);       // return string to User space
-            delete[] buffer;
+            delete buffer;
 
             IncreasePC();
             return;
@@ -230,13 +231,48 @@ void ExceptionHandler(ExceptionType which)
             ASSERTNOTREACHED();
             break;
 
-        // Nhung system call chua duoc xu li thi se in ra thong bao loi
+        case SC_CreateFile:
+            // Input: Dia chi tu vung nho user cua ten file
+            // Output: -1 = Loi, 0 = Thanh cong
+            // Chuc nang: Tao ra file voi tham so la ten file
+            int virtAddr;
+            char *filename;
+            virtAddr = kernel->machine->ReadRegister(4); //Doc dia chi cua file tu thanh ghi R4
+            filename = User2System(virtAddr, MaxFileLength + 1);
+            SysCreateFile(filename);
+            delete[] filename;
+
+            IncreasePC();
+            return;
+            //break;
+            //Tao file thanh cong
+
+        case SC_Open:
+            int virtAddr = kernel->machine->ReadRegister(4); // Lay dia chi cua tham so name tu thanh ghi so 4
+            int type = kernel->machine->ReadRegister(5);     // Lay tham so type tu thanh ghi so 5
+            char *filename;
+            filename = User2System(virtAddr, MaxFileLength); // Copy chuoi tu vung nho User Space sang System Space voi bo dem name dai MaxFileLength
+            SysOpen(filename, type);                         //Kiem tra xem OS con mo dc file khong
+            delete[] filename;
+
+            IncreasePC();
+            return;
+            break;
+
+        case SC_Close:
+            int id = kernel->machine->ReadRegister(4); // Lay id cua file tu thanh ghi so 4
+            SysClose(id);
+            IncreasePC();
+            return;
+            break;
+
         case SC_Exec:
             virtualAddr = kernel->machine->ReadRegister(4);
             char *name;
             name = User2System(virtualAddr, MAX_FILENAME_LENGTH + 1);
             SysExec(name);
-            if (name != NULL) delete[] name;
+            if (name != NULL)
+                delete[] name;
             IncreasePC();
             return;
 
@@ -252,6 +288,7 @@ void ExceptionHandler(ExceptionType which)
 
             ASSERTNOTREACHED();
             break;
+
         case SC_Exit:
             int exitCode;
             exitCode = kernel->machine->ReadRegister(4);
@@ -261,12 +298,101 @@ void ExceptionHandler(ExceptionType which)
 
             ASSERTNOTREACHED();
             break;
-        case SC_Create:
-        case SC_Open:
+
         case SC_Read:
+            int virtAddr = kernel->machine->ReadRegister(4);
+            int size = kernel->machine->ReadRegister(5);
+            int id = kernel->machine->ReadRegister(6);
+            int oldPos, newPos;
+            char *buffer;
+
+            if (id < 0 || id > 9)
+            {
+                kernel->machine->WriteRegister(2, -1);
+                IncreasePC();
+                return;
+            }
+
+            if (kernel->fileSystem->openf[id] == NULL)
+            {
+                kernel->machine->WriteRegister(2, -1);
+                IncreasePC();
+                return;
+            }
+
+            if (id == CONSOLE_OUTPUT)
+            {
+                kernel->machine->WriteRegister(2, -1);
+                IncreasePC();
+                return;
+            }
+            oldPos = kernel->fileSystem->openf[id]->GetCurrentPos();
+            buffer = User2System(virtAddr, size) if (id == CONSOLE_INPUT)
+            {
+            }
+            else if ((kernel->fileSystem->openf[id]->Read(buffer, size)) > 0)
+            {
+                newPos = kernel->filesystem->openf[id]->GetCurrentPos();
+                System2User(virtAddr, newPos - oldPos, buffer);
+                kernel->machine->WriteRegister(2, newPos - oldPos);
+            }
+            else
+            {
+                kernel->machine->WriteRegister(2, -2);
+            }
+
+            delete buf;
+            IncreasePC();
+            return;
+
         case SC_Write:
+            int virtAddr = kernel->machine->ReadRegister(4);
+            int size = kernel->machine->ReadRegister(5);
+            int id = kernel->machine->ReadRegister(6);
+            int oldPos, newPos;
+            char *buffer;
+
+            if (id < 0 || id > 9)
+            {
+                kernel->machine->WriteRegister(2, -1);
+                IncreasePC();
+                return;
+            }
+
+            if (kernel->fileSystem->openf[id] == NULL)
+            {
+                kernel->machine->WriteRegister(2, -1);
+                IncreasePC();
+                return;
+            }
+
+            if (id == CONSOLE_OUTPUT)
+            {
+                kernel->machine->WriteRegister(2, -1);
+                IncreasePC();
+                return;
+            }
+            oldPos = kernel->fileSystem->openf[id]->GetCurrentPos();
+            buffer = User2System(virtAddr, size) if (id == CONSOLE_INPUT)
+            {
+            }
+            else if ((kernel->fileSystem->openf[id]->Read(buffer, size)) > 0)
+            {
+                newPos = kernel->filesystem->openf[id]->GetCurrentPos();
+                System2User(virtAddr, newPos - oldPos, buffer);
+                kernel->machine->WriteRegister(2, newPos - oldPos);
+            }
+            else
+            {
+                kernel->machine->WriteRegister(2, -2);
+            }
+
+            delete buf;
+            IncreasePC();
+            return;
+        // Nhung system call chua duoc xu li thi se in ra thong bao loi
+        case SC_Create:
         case SC_Seek:
-        case SC_Close:
         case SC_ThreadFork:
         case SC_ThreadYield:
         case SC_ExecV:
