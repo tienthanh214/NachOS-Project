@@ -6,21 +6,28 @@
  */
 
 #include "syscall.h"
+#include "fileutils.h"
 
 int main()
 {
-    char* buf;
-    int id, i, cnt;
-    
+    int id, i, cnt, err;
+    err = 0;
     // CreateFile("test.txt");
+    // -2 la het file
+    // -3 la het dong
 
     id = Open("test.txt", 0);
-    PrintNum(id);
-    cnt = Read(buf, 50, id);
-    PrintNum(cnt);
-    PrintChar('\n');
-    PrintString(buf);
-    
+    while (err != -2)
+    {
+        err = ReadInt(id, &cnt);
+        PrintNum(cnt);
+        PrintChar(' ');
+        if (err == -3)
+        {
+            PrintChar('\n');
+        }
+        
+    }
 
     Close(id);
 
