@@ -12,6 +12,8 @@
 #include "debug.h"
 #include "kernel.h"
 
+class Semaphore;
+
 extern Kernel *kernel;
 extern Debug *debug;
 

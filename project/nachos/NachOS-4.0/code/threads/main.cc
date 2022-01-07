@@ -46,11 +46,14 @@
 #include "openfile.h"
 #include "sysdep.h"
 
+/*
+    19CNTN - HCMUS
+*/
+
 // global variables
 Kernel *kernel;
 Debug *debug;
-
-
+           
 //----------------------------------------------------------------------
 // Cleanup
 //	Delete kernel data structures; called when user hits "ctl-C".
@@ -246,11 +249,12 @@ main(int argc, char **argv)
     debug = new Debug(debugArg);
     
     DEBUG(dbgThread, "Entering main");
+    // init global variable
 
     kernel = new Kernel(argc, argv);
 
     kernel->Initialize();
-
+    
     CallOnUserAbort(Cleanup);		// if user hits ctl-C
 
     // at this point, the kernel is ready to do something
@@ -287,9 +291,11 @@ main(int argc, char **argv)
     if (userProgName != NULL) {
       AddrSpace *space = new AddrSpace;
       ASSERT(space != (AddrSpace *)NULL);
+      // setup main process pid = 0
+      kernel->pTab->initStartProcess(userProgName);
       if (space->Load(userProgName)) {  // load the program into the space
-	space->Execute();              // run the program
-	ASSERTNOTREACHED();            // Execute never returns
+        space->Execute();              // run the program
+        ASSERTNOTREACHED();            // Execute never returns
       }
     }
 

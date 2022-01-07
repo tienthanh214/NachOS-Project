@@ -37,6 +37,10 @@
 #define SC_ExecV	    13
 #define SC_ThreadExit   14
 #define SC_ThreadJoin   15
+// syscall semaphore
+#define SC_CreateSemaphore  16
+#define SC_Wait             17
+#define SC_Signal           18
 
 #define SC_Add		    42
 

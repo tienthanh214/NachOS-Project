@@ -105,7 +105,7 @@ void SysPrintNum(int op1)
         op1 = -op1;
     }
 
-    char arr[11];
+    char arr[10];
     int i = 0;
     int j, r;
 
@@ -165,11 +165,11 @@ void SysReadString(char *buffer, int length)
 void SysPrintString(char *buffer)
 {
     int length = 0;
-    while (buffer[length])
-    {
+    while (buffer[length]) { // loop until meet '\0'
         kernel->synchConsoleOut->PutChar(buffer[length++]);
     }
 }
+
 void SysCreateFile(char *filename)
 {
     if (strlen(filename) == 0)
@@ -226,6 +226,7 @@ void SysOpen(char *filename, int type)
     kernel->machine->WriteRegister(2, -1); //Khong mo duoc file return -1
     return;
 }
+
 void SysClose(int id)
 {
     if (id >= 0 && id <= 9) //Chi xu li khi fid nam trong [0, 14]
@@ -241,4 +242,98 @@ void SysClose(int id)
     kernel->machine->WriteRegister(2, -1);
     return;
 }
+
+/*  Xu ly syscall Exec
+    Input: buffer (char*) ten cua process
+*/
+void SysExec(char* name) {
+    if (name == NULL) {
+        DEBUG('a', "\n Not enough memory in System");
+        printf("\n Not enough memory in System");
+        kernel->machine->WriteRegister(2, -1);
+        return;
+    }
+
+    OpenFile *oFile = kernel->fileSystem->Open(name);
+    if (oFile == NULL) {
+        printf("\nExec:: Can't open this file.");
+        kernel->machine->WriteRegister(2, -1);
+        return;
+    }
+    delete oFile;
+    int id = kernel->pTab->ExecUpdate(name);
+    kernel->machine->WriteRegister(2, id);
+}
+
+/* Xu ly syscall Join
+    Input: pid tien trinh cha join 
+*/
+int SysJoin(int pid) {
+    return kernel->pTab->JoinUpdate(pid);
+}
+
+/* Xu ly syscall Exit
+    Input: exit code
+*/
+void SysExit(int ec) {
+    kernel->pTab->ExitUpdate(ec);
+    kernel->currentThread->FreeSpace();
+    kernel->currentThread->Finish();
+}
+
+/* Xu ly syscall CreateSemaphore
+    input: semaphore name, value
+    output -1 neu loi nguoc lai tra ve id cua semaphore
+*/
+int SysCreateSemaphore(char* name, int semVal) {
+    if (name == NULL) {
+        DEBUG('a', "\n Not enough memory in System");
+        printf("\n Not enough memory in System");
+        return -1;
+    }
+    int res = kernel->semTab->Create(name, semVal);
+    if (res == -1) {
+        printf("\n Can't create semaphore.");
+        return -1;
+    }
+    return res;
+}
+
+/* Xu ly syscall Wait
+    input: semaphore name
+    output -1 neu loi nguoc lai tra ve id cua semaphore
+*/
+int SysWait(char* name) {
+    if (name == NULL) {
+        DEBUG('a', "\n Not enough memory in System");
+        printf("\n Not enough memory in System");
+        return -1;
+    }
+    int res = kernel->semTab->Wait(name);
+    if (res == -1) {
+        printf("\nSemaphore %s doesn't exist.", name);
+        return -1;
+    }
+    return res;
+}
+
+/* Xu ly syscall Signal
+    input: semaphore name
+    output -1 neu loi nguoc lai tra ve id cua semaphore
+*/
+int SysSignal(char* name) {
+    if (name == NULL) {
+        DEBUG('a', "\n Not enough memory in System");
+        printf("\n Not enough memory in System");
+        return -1;
+    }
+    int res = kernel->semTab->Signal(name);
+    if (res == -1) {
+        printf("\nSemaphore %s doesn't exist.", name);
+        return -1;
+    }
+    return res;
+}
+
+
 #endif /* ! __USERPROG_KSYSCALL_H__ */
