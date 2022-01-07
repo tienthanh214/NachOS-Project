@@ -17,12 +17,12 @@ int main()
     // -3 la het dong
 
     id = Open("test.txt", 0);
-    while (err != -2)
+    while (err != END_OF_FILE)
     {
         err = ReadInt(id, &cnt);
         PrintNum(cnt);
         PrintChar(' ');
-        if (err == -3)
+        if (err == END_OF_LINE)
         {
             PrintChar('\n');
         }
