@@ -14,7 +14,7 @@ int main()
     while (err != END_OF_FILE)
     {
         err = ReadInt(id, &cnt);
-        if (err == END_OF_LINE || err == END_OF_FILE)
+        if (err == END_OF_LINE)
         {
             PrintNum(cnt);
             PrintChar('\n');
@@ -23,7 +23,11 @@ int main()
         {
             PrintNum(cnt);
             PrintChar(' ');
-        }        
+        }
+        else
+        {
+            /* Don't print when End Of File */
+        }
     }
 
     Close(id);

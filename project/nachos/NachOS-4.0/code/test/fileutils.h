@@ -19,7 +19,7 @@ int ReadInt(int id, int *num)
 {
     int err;
     char c;
-    bool isSign, isInteger;
+    bool isSign, isInteger, isInput;
     *num = 0;
     isSign = false;
     isInteger = true;
@@ -27,19 +27,20 @@ int ReadInt(int id, int *num)
     do
     {
         err = Read(&c, 1, id);
-        if (err == END_OF_FILE)
+        if (err == END_OF_FILE) 
             return END_OF_FILE;
-    } while (c == ' ');
-    if (c == '\n') return END_OF_LINE;
+    } while (c == '\n' || c == ' ');
     // Xu li so am
     if (c == '-')
     {
         isSign = true;
         err = Read(&c, 1, id);
-        if (err == END_OF_FILE)
+        if (err == END_OF_FILE) 
             return END_OF_FILE;
-        if (c == '\n' || c == ' ')
-            *num = 0;
+        if (c == '\n')          
+            return END_OF_LINE;
+        if (c == ' ')           
+            return HEAD_OF_LINE;
     }
     // Doc chuoi ki tu va chuyen thanh so nguyen
     if (!isDigit(c) && c != '\n' && c != ' ')
@@ -51,13 +52,16 @@ int ReadInt(int id, int *num)
         if (!isDigit(c) && c != '\n' && c != ' ')
             isInteger = false;
     } while (c != '\n' && c != ' ' && err != END_OF_FILE);
-    // Xoa cac dau o cuoi
-    if (!isInteger) { *num = 0; }
-    if (isSign)     { *num = -(*num); }
+    // Thay doi gia tri so khi can
+    if (!isInteger) *num = 0;
+    if (isSign)     *num = -(*num);
     // Kiem tra vi tri so
     if (err == END_OF_FILE)
-        return END_OF_FILE;
+        // Truong hop file ket thuc ma ko xuong dong
+        // thi xem ket thuc file la ket thuc dong
+        return END_OF_LINE;
     if (c == '\n')
+        // Truong hop so nam o cuoi dong
         return END_OF_LINE;
     return HEAD_OF_LINE;
 }
