@@ -8,8 +8,13 @@
 #include "syscall.h"
 
 int main() {
-    int result;
-    result = Add(12, 23);
+   
+    CreateFile("test.txt");
+    //
+  
+    PrintNum(Open("test.txt",0));
+    Close(Open("test.txt",0));
+    PrintString("closed file");
     Halt();
 
     /* not reached */
