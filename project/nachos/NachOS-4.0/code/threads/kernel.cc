@@ -102,7 +102,7 @@ Kernel::Initialize()
     synchConsoleOut = new SynchConsoleOutput(consoleOut); // output to stdout
     synchDisk = new SynchDisk();    //
 #ifdef FILESYS_STUB
-    fileSystem = new FileSystem();
+    fileSystem = new FileSystem(true);
 #else
     fileSystem = new FileSystem(formatFlag);
 #endif // FILESYS_STUB

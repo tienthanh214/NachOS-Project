@@ -22,7 +22,10 @@
 #define SC_Exit		    1
 #define SC_Exec		    2
 #define SC_Join		    3
-#define SC_Create	    4
+
+
+#define SC_CreateFile	    50
+#define SC_Create       4
 #define SC_Remove       5
 #define SC_Open		    6
 #define SC_Read		    7
@@ -44,6 +47,9 @@
 #define SC_RandomNum    47
 #define SC_ReadString   48
 #define SC_PrintString  49
+// define CreateFile syscall
+
+
 
 #ifndef IN_ASM
 
@@ -77,6 +83,7 @@ void ReadString(char[], int);
 
 void PrintString(char[]);
 
+int CreateFile(char* name);
 /*======================================================*/
 
 
@@ -138,7 +145,9 @@ typedef int OpenFileId;
 /* Create a Nachos file, with name "name" */
 /* Note: Create does not open the file.   */
 /* Return 1 on success, negative error code on failure */
+
 int Create(char *name);
+
 
 /* Remove a Nachos file, with name "name" */
 int Remove(char *name);
@@ -146,7 +155,7 @@ int Remove(char *name);
 /* Open the Nachos file "name", and return an "OpenFileId" that can 
  * be used to read and write to the file.
  */
-OpenFileId Open(char *name);
+OpenFileId Open(char *name, int type);
 
 /* Write "size" bytes from "buffer" to the open file. 
  * Return the number of bytes actually read on success.

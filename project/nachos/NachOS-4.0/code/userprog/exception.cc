@@ -25,6 +25,9 @@
 #include "main.h"
 #include "syscall.h"
 #include "ksyscall.h"
+
+
+#define MaxFileLength 32 
 //----------------------------------------------------------------------
 // ExceptionHandler
 // 	Entry point into the Nachos kernel.  Called when a user program
@@ -189,7 +192,6 @@ void ExceptionHandler(ExceptionType which) {
                     
                     IncreasePC();
                     return;
-
                     ASSERTNOTREACHED();
                     break;
 
@@ -215,20 +217,55 @@ void ExceptionHandler(ExceptionType which) {
                     buffer = User2System(virtualAddr, 255);         // copy string (max 255 byte) from User space to Kernel space
                     SysPrintString(buffer);                         // print string
                     delete buffer;    
-                    
                     IncreasePC();
                     return;
-
+                case SC_CreateFile:
+                    {
+			// Input: Dia chi tu vung nho user cua ten file
+			// Output: -1 = Loi, 0 = Thanh cong
+			// Chuc nang: Tao ra file voi tham so la ten file
+			            int virtAddr;
+			            char* filename;
+			            virtAddr = kernel -> machine->ReadRegister(4); //Doc dia chi cua file tu thanh ghi R4	
+		            	filename = User2System(virtAddr, MaxFileLength + 1);
+		            	SysCreateFile(filename);
+		        		delete[] filename;
+				        IncreasePC();
+				        return;
+			        	//break;
+		        	}
+			
+			        //Tao file thanh cong
+	        	
+                case SC_Open:
+                {   
+                    int virtAddr = kernel->machine->ReadRegister(4); // Lay dia chi cua tham so name tu thanh ghi so 4
+			        int type = kernel->machine->ReadRegister(5); // Lay tham so type tu thanh ghi so 5
+	    		    char* filename;
+		        	filename = User2System(virtAddr, MaxFileLength); // Copy chuoi tu vung nho User Space sang System Space voi bo dem name dai MaxFileLength
+			        SysOpen(filename,type);//Kiem tra xem OS con mo dc file khong
+		        	delete[] filename;
+					IncreasePC();
+					return;
+	        		break;
+                   }
+               case SC_Close:
+               {
+		        	int id = kernel->machine->ReadRegister(4); // Lay id cua file tu thanh ghi so 4
+		        	SysClose(id);
+					IncreasePC();
+					return;
+		        	break;
+	        	}
+                
+                case SC_Read:
+				case SC_Write:
                 // Nhung system call chua duoc xu li thi se in ra thong bao loi
                 case SC_Exit:
 				case SC_Exec:
 				case SC_Join:
 				case SC_Create:
-				case SC_Open:
-				case SC_Read:
-				case SC_Write:
 				case SC_Seek:
-				case SC_Close:
 				case SC_ThreadFork:   
 				case SC_ThreadYield:
 				case SC_ExecV:	    
