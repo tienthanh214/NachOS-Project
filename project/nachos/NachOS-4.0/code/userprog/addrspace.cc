@@ -193,7 +193,7 @@ AddrSpace::Load(char *fileName)
     int lastDataPageSize = (noffH.initData.size - firstDataPageSize - 1) % PageSize + 1;
     unsigned int numDataPage = divRoundUp(noffH.initData.size - firstDataPageSize, PageSize);
     
-    // copy into memory
+    // copy code into memory
     if (noffH.code.size > 0) {
         DEBUG(dbgAddr, "Initializing code segment.");
 	    DEBUG(dbgAddr, noffH.code.virtualAddr << ", " << noffH.code.size);
@@ -206,6 +206,7 @@ AddrSpace::Load(char *fileName)
             );
         }
     }
+    // copy initdata into memory
     if (noffH.initData.size > 0) {
         DEBUG(dbgAddr, "Initializing data segment.");
 	    DEBUG(dbgAddr, noffH.initData.virtualAddr << ", " << noffH.initData.size);
@@ -228,7 +229,7 @@ AddrSpace::Load(char *fileName)
     }
 
 #ifdef RDATA
-    // TODO: copy readonly to main
+    // copy readonly to main
     if (noffH.readonlyData.size > 0) {
         DEBUG(dbgAddr, "Initializing read only data segment.");
 	    DEBUG(dbgAddr, noffH.readonlyData.virtualAddr << ", " << noffH.readonlyData.size);
