@@ -20,7 +20,7 @@ int main()
     while (err != END_OF_FILE)
     {
         err = ReadInt(id, &cnt);
-        if (err == END_OF_LINE)
+        if (err == END_OF_LINE || err == END_OF_FILE)
         {
             PrintNum(cnt);
             PrintChar('\n');
@@ -29,7 +29,7 @@ int main()
         {
             PrintNum(cnt);
             PrintChar(' ');
-        }
+        }        
     }
 
     Close(id);

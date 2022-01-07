@@ -29,7 +29,8 @@ int ReadInt(int id, int *num)
         err = Read(&c, 1, id);
         if (err == END_OF_FILE)
             return END_OF_FILE;
-    } while (c == ' ' || c == '\n');
+    } while (c == ' ');
+    if (c == '\n') return END_OF_LINE;
     // Xu li so am
     if (c == '-')
     {
@@ -58,15 +59,6 @@ int ReadInt(int id, int *num)
         return END_OF_FILE;
     if (c == '\n')
         return END_OF_LINE;
-    // Xoa dau cach o cuoi xem co end line hay end file ko
-    // do
-    //     err = Read(&c, 1, id);
-    // while (c == ' ');
-    // // Kiem tra vi tri so
-    // if (c == '\n')
-    //     return END_OF_LINE;
-    // if (err == END_OF_FILE)
-    //     return END_OF_FILE;
     return HEAD_OF_LINE;
 }
 
