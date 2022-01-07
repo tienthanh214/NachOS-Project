@@ -36,7 +36,6 @@ public:
     void Remove(int pid);
     char *GetFileName(int id);
 
-private:
     void initStartProcess(char* name);
 };
 

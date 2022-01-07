@@ -188,4 +188,59 @@ void SysExit(int ec) {
     kernel->currentThread->Finish();
 }
 
+/* Xu ly syscall CreateSemaphore
+    input: semaphore name, value
+    output -1 neu loi nguoc lai tra ve id cua semaphore
+*/
+int SysCreateSemaphore(char* name, int semVal) {
+    if (name == NULL) {
+        DEBUG('a', "\n Not enough memory in System");
+        printf("\n Not enough memory in System");
+        return -1;
+    }
+    int res = kernel->semTab->Create(name, semVal);
+    if (res == -1) {
+        printf("\n Can't create semaphore.");
+        return -1;
+    }
+    return res;
+}
+
+/* Xu ly syscall Wait
+    input: semaphore name
+    output -1 neu loi nguoc lai tra ve id cua semaphore
+*/
+int SysWait(char* name) {
+    if (name == NULL) {
+        DEBUG('a', "\n Not enough memory in System");
+        printf("\n Not enough memory in System");
+        return -1;
+    }
+    int res = kernel->semTab->Wait(name);
+    if (res == -1) {
+        printf("\nSemaphore %s doesn't exist.", name);
+        return -1;
+    }
+    return res;
+}
+
+/* Xu ly syscall Signal
+    input: semaphore name
+    output -1 neu loi nguoc lai tra ve id cua semaphore
+*/
+int SysSignal(char* name) {
+    if (name == NULL) {
+        DEBUG('a', "\n Not enough memory in System");
+        printf("\n Not enough memory in System");
+        return -1;
+    }
+    int res = kernel->semTab->Signal(name);
+    if (res == -1) {
+        printf("\nSemaphore %s doesn't exist.", name);
+        return -1;
+    }
+    return res;
+}
+
+
 #endif /* ! __USERPROG_KSYSCALL_H__ */

@@ -242,7 +242,7 @@ void ExceptionHandler(ExceptionType which)
 
             ASSERTNOTREACHED();
             break;
-
+        // xu ly syscall Join
         case SC_Join:
             int pid;
             pid = kernel->machine->ReadRegister(4);
@@ -252,6 +252,7 @@ void ExceptionHandler(ExceptionType which)
 
             ASSERTNOTREACHED();
             break;
+        // xu ly syscall Exit
         case SC_Exit:
             int exitCode;
             exitCode = kernel->machine->ReadRegister(4);
@@ -261,6 +262,36 @@ void ExceptionHandler(ExceptionType which)
 
             ASSERTNOTREACHED();
             break;
+        case SC_CreateSemaphore:
+            int semVal;
+            virtualAddr = kernel->machine->ReadRegister(4);
+            semVal = kernel->machine->ReadRegister(5);
+            name = User2System(virtualAddr, MAX_FILENAME_LENGTH + 1);
+            result = SysCreateSemaphore(name, semVal);
+            if (name != NULL) delete[] name;
+            // ghi ket qua tra ve
+            kernel->machine->WriteRegister(2, result); 
+            IncreasePC();
+            return;
+
+            ASSERTNOTREACHED();
+            break;
+        case SC_Wait:
+            virtualAddr = kernel->machine->ReadRegister(4);
+            name = User2System(virtualAddr, MAX_FILENAME_LENGTH + 1);
+            result = SysWait(name);
+            
+            kernel->machine->WriteRegister(2, result); 
+            IncreasePC();
+            return;
+        case SC_Signal:
+            virtualAddr = kernel->machine->ReadRegister(4);
+            name = User2System(virtualAddr, MAX_FILENAME_LENGTH + 1);
+            result = SysSignal(name);
+
+            kernel->machine->WriteRegister(2, result); 
+            IncreasePC();
+            return;
         case SC_Create:
         case SC_Open:
         case SC_Read:
