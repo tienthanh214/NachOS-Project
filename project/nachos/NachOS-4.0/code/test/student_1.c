@@ -48,6 +48,7 @@ int main() {
     // -------- ghi ket qua vao file -------------
     Wait("output_mutex");
     fResult = Open("result.txt", 0);
+    Seek(Seek(-1, fResult), fResult);
     WriteNum(fResult, studentId);
     WriteChar(fResult, ' ');
     WriteNum(fResult, faucetId);

@@ -94,7 +94,7 @@ bool solve(int* a, int n, int fOutput) {
         WriteNum(fStudent, a[i]);
         Close(fStudent);
         // tien trinh sinh vien moi
-        studentPid[i] = Exec("student");
+        studentPid[i] = Exec("student_1");
         if (studentPid[i] == -1) {
             Signal("file_mutex");
             PrintString("\n Can't excecute process student\n");
