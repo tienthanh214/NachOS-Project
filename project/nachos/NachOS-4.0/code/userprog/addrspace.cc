@@ -143,7 +143,7 @@ AddrSpace::Load(char *fileName)
            noffH.uninitData.size + UserStackSize;	
                                                 // we need to increase the size
 						// to leave room for the stack
-
+    // printf("Load Addrspace: %d %d %d %d %d %d\n", noffH.code.virtualAddr, noffH.code.size, noffH.initData.virtualAddr, noffH.initData.size, noffH.readonlyData.virtualAddr, noffH.readonlyData.size);
 #else
 // how big is address space?
     size = noffH.code.size + noffH.initData.size + noffH.uninitData.size 
@@ -152,7 +152,7 @@ AddrSpace::Load(char *fileName)
 #endif
     numPages = divRoundUp(size, PageSize);
     size = numPages * PageSize;
-
+    // printf("\nNumpage = %d\n", numPages);
     ASSERT(numPages <= NumPhysPages);		// check we're not trying
 						// to run anything too big --
 						// at least until we have
