@@ -113,7 +113,7 @@ PROGRAMS = unknownhost
 else
 # change this if you create a new test program!
 
-PROGRAMS = add halt shell matmult sort segments help ascii testsyscall ping pong consoleio
+PROGRAMS = add halt shell matmult sort segments help ascii testsyscall ping pong consoleio main student pipe
 
 endif
 
@@ -196,11 +196,23 @@ consoleio: consoleio.o start.o
 	$(LD) $(LDFLAGS) start.o consoleio.o -o consoleio.coff
 	$(COFF2NOFF) consoleio.coff consoleio
 
-fileutilssample.o: fileutilssample.c
-	$(CC) $(CFLAGS) -c fileutilssample.c
-consoleio: fileutilssample.o start.o
-	$(LD) $(LDFLAGS) start.o fileutilssample.o -o fileutilssample.coff
-	$(COFF2NOFF) fileutilssample.coff fileutilssample
+main.o: main.c
+	$(CC) $(CFLAGS) -c main.c
+main: main.o start.o
+	$(LD) $(LDFLAGS) start.o main.o -o main.coff
+	$(COFF2NOFF) main.coff main
+
+student.o: student.c
+	$(CC) $(CFLAGS) -c student.c
+student: student.o start.o
+	$(LD) $(LDFLAGS) start.o student.o -o student.coff
+	$(COFF2NOFF) student.coff student
+
+pipe.o: pipe.c
+	$(CC) $(CFLAGS) -c pipe.c
+pipe: pipe.o start.o
+	$(LD) $(LDFLAGS) start.o pipe.o -o pipe.coff
+	$(COFF2NOFF) pipe.coff pipe
 
 clean:
 	$(RM) -f *.o *.ii
