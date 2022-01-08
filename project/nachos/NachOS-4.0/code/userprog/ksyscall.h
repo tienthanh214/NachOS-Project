@@ -190,7 +190,7 @@ void SysPrintString(char *buffer)
         kernel->synchConsoleOut->PutChar(buffer[length++]);
     }
 }
-
+// Syscall tao file
 void SysCreateFile(char *filename)
 {
     if (strlen(filename) == 0)
@@ -261,13 +261,13 @@ void SysExit(int ec)
     kernel->currentThread->FreeSpace();
     kernel->currentThread->Finish();
 }
-
+// Xu li syscall Open file
 void SysOpen(char *filename, int type)
 {
     int freeSlot = kernel->fileSystem->FindFreeSlot();
-    if (freeSlot != -1) //Chi xu li khi con slot trong
+    if (freeSlot != -1)     //Chi xu li khi con slot trong mang openf[]
     {
-        if (type == 0 || type == 1) //chi xu li khi type = 0 hoac 1
+        if (type == 0 || type == 1)     //chi xu li khi type = 0 hoac 1
         {
             if ((kernel->fileSystem->openf[freeSlot] = kernel->fileSystem->Open(filename, type)) != NULL) //Mo file thanh cong
             {
@@ -275,25 +275,26 @@ void SysOpen(char *filename, int type)
                 return;
             }
         }
-        else if (type == 2) // xu li stdin voi type quy uoc la 2
+        else if (type == 2) // xu li stdin voi type = 2
         {
             kernel->machine->WriteRegister(2, 0); //tra ve OpenFileID
             return;
         }
-        else // xu li stdout voi type quy uoc la 3
+        else // xu li stdout voi type = 3
         {
             kernel->machine->WriteRegister(2, 1); //tra ve OpenFileID
             return;
         }
+        kernel->machine->WriteRegister(2, -1);      // tra ve -1 neu filename khong ton tai
         return;
     }
     kernel->machine->WriteRegister(2, -1); //Khong mo duoc file return -1
     return;
 }
-
+// Xu li syscall Close file
 void SysClose(int id)
 {
-    if (id >= 0 && id <= 9) //Chi xu li khi fid nam trong [0, 14]
+    if (id >= 0 && id <= 9) //Chi xu li khi file id nam trong [0, 9]
     {
         if (kernel->fileSystem->openf[id]) //neu mo file thanh cong
         {

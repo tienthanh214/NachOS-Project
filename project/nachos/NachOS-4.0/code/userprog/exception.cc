@@ -245,9 +245,8 @@ void ExceptionHandler(ExceptionType which)
         }
         case SC_CreateFile:
         {
-            // Input: Dia chi tu vung nho user cua ten file
-            // Output: -1 = Loi, 0 = Thanh cong
-            // Chuc nang: Tao ra file voi tham so la ten file
+       
+            // Tao ra file voi tham so la ten file
             int virtAddr;
             char *filename;
             virtAddr = kernel->machine->ReadRegister(4); //Doc dia chi cua file tu thanh ghi R4
@@ -257,41 +256,15 @@ void ExceptionHandler(ExceptionType which)
 
             IncreasePC();
             return;
-            //break;
             //Tao file thanh cong
         }
-        // case SC_Open:
-        // {
-        //     int virtAddr = kernel->machine->ReadRegister(4); // Lay dia chi cua tham so name tu thanh ghi so 4
-        //     int type = kernel->machine->ReadRegister(5);     // Lay tham so type tu thanh ghi so 5
-        //     char *filename;
-        //     filename = User2System(virtAddr, MaxFileLength); // Copy chuoi tu vung nho User Space sang System Space voi bo dem name dai MaxFileLength
-        //     SysOpen(filename, type);                         //Kiem tra xem OS con mo dc file khong
-        //     delete[] filename;
-        // }
-        // case SC_CreateFile:
-        // {
-        //     // Input: Dia chi tu vung nho user cua ten file
-        //     // Output: -1 = Loi, 0 = Thanh cong
-        //     // Chuc nang: Tao ra file voi tham so la ten file
-        //     int virtAddr;
-        //     char* filename;
-        //     virtAddr = kernel -> machine->ReadRegister(4); //Doc dia chi cua file tu thanh ghi R4
-        //     filename = User2System(virtAddr, MAX_FILENAME_LENGTH + 1);
-        //     SysCreateFile(filename);
-        //     delete[] filename;
-        //     IncreasePC();
-        //     return;
-        //     //break;
-        // }
-        // //Tao file thanh cong
-        case SC_Open:
+        case SC_Open:           // Mo mot file voi type read-and-write hoac only-read
         {
-            int virtAddr = kernel->machine->ReadRegister(4); // Lay dia chi cua tham so name tu thanh ghi so 4
-            int type = kernel->machine->ReadRegister(5);     // Lay tham so type tu thanh ghi so 5
+            int virtAddr = kernel->machine->ReadRegister(4);        // Doc tham so filename
+            int type = kernel->machine->ReadRegister(5);            // Doc tham so type
             char *filename;
-            filename = User2System(virtAddr, MAX_FILENAME_LENGTH + 1); // Copy chuoi tu vung nho User Space sang System Space voi bo dem name dai MaxFileLength
-            SysOpen(filename, type);                                   //Kiem tra xem OS con mo dc file khong
+            filename = User2System(virtAddr, MAX_FILENAME_LENGTH + 1); 
+            SysOpen(filename, type);                                   //Mo file, tra ve type neu thanh cong, tra ve -1 neu that bai
             delete[] filename;
             IncreasePC();
             return;
@@ -300,7 +273,7 @@ void ExceptionHandler(ExceptionType which)
         case SC_Close:
         {
             int id = kernel->machine->ReadRegister(4); // Lay id cua file tu thanh ghi so 4
-            SysClose(id);
+            SysClose(id);                               // Dong file
             IncreasePC();
             return;
             break;
