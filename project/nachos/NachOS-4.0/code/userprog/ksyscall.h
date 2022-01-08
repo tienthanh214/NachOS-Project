@@ -379,6 +379,10 @@ int SysSignal(char *name)
     return res;
 }
 
+/* Xu ly syscall Read
+    input: semaphore name
+    output -1 neu loi nguoc lai tra ve id cua semaphore
+*/
 int SysRead(char *buffer, int size, OpenFileId id)
 {
     int oldPos, newPos;
@@ -403,6 +407,10 @@ int SysRead(char *buffer, int size, OpenFileId id)
     return -2;
 }
 
+/* Xu ly syscall Write
+    input: semaphore name
+    output -1 neu loi nguoc lai tra ve id cua semaphore
+*/
 int SysWrite(char *buffer, int size, OpenFileId id)
 {
     int oldPos, newPos;
@@ -435,6 +443,30 @@ int SysWrite(char *buffer, int size, OpenFileId id)
         return newPos - oldPos;
     }
     return -1;
+}
+
+/* Xu ly syscall Seek
+    input: position vi tri can di chuyen, id la id cua file
+    output -1 neu loi nguoc lai tra ve pos vua di chuyen toi
+*/
+int SysSeek(int position, int id)
+{
+    // Id cua file nam ngoai vung quan li
+    if (id < 0 || id > 9)
+        return -1;
+    // File ko ton tai thi bao loi
+    if (kernel->fileSystem->openf[id] == NULL)
+        return -1;
+    // Khong the seek tren console
+    if (id == 1 || id == 0)
+        return -1;
+    // Neu position la -1 thi seek het toan bo file
+    position = (position == -1) ? kernel->fileSystem->openf[id]->Length() : position;
+    if (position > kernel->fileSystem->openf[id]->Length() || position < 0)
+        return -1;
+    // Neu mo duoc file thi di chuyen den vi tri duoc yeu cau
+    kernel->fileSystem->openf[id]->Seek(position);
+    return position;
 }
 
 #endif /* ! __USERPROG_KSYSCALL_H__ */
