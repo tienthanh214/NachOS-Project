@@ -381,8 +381,8 @@ void ExceptionHandler(ExceptionType which)
             int res = SysWrite(buffer, size, id);
 
             kernel->machine->WriteRegister(2, res);
-            if (res != -1 && res != -2)
-                System2User(virtAddr, res, buffer);
+            // if (res != -1 && res != -2)
+            //     System2User(virtAddr, res, buffer);
 
             delete buffer;
             IncreasePC();

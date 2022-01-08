@@ -434,7 +434,7 @@ int SysWrite(char *buffer, int size, OpenFileId id)
         newPos = kernel->fileSystem->openf[id]->GetCurrentPos();
         return newPos - oldPos;
     }
-    return -2;
+    return -1;
 }
 
 #endif /* ! __USERPROG_KSYSCALL_H__ */
