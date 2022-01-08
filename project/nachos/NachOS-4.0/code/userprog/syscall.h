@@ -40,6 +40,7 @@
 #define SC_CreateSemaphore  16
 #define SC_Wait             17
 #define SC_Signal           18
+#define SC_GetPID           19
 
 #define SC_Add		    42
 
@@ -88,6 +89,12 @@ void ReadString(char[], int);
 void PrintString(char[]);
 
 int CreateFile(char* name);
+
+int CreateSemaphore(char* name, int value);
+
+int Signal(char* name);
+
+int Wait(char* name);
 /*======================================================*/
 
 

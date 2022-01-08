@@ -154,6 +154,14 @@ Exec:
 	j	$31
 	.end Exec
 
+	.globl GetPID
+	.ent	GetPID
+GetPID:
+	addiu $2,$0,SC_GetPID
+	syscall
+	j	$31
+	.end GetPID
+
 	.globl ExecV
 	.ent	ExecV
 ExecV:

@@ -316,6 +316,12 @@ void ExceptionHandler(ExceptionType which)
             ASSERTNOTREACHED();
             break;
         }
+        case SC_GetPID:
+        {
+            kernel->machine->WriteRegister(2, kernel->currentThread->processID);
+            IncreasePC();
+            return;
+        }
         case SC_CreateSemaphore:
         {
             int virtualAddr = kernel->machine->ReadRegister(4);
