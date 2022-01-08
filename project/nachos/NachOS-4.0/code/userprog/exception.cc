@@ -280,7 +280,7 @@ void ExceptionHandler(ExceptionType which)
         }
         case SC_Exec:
         {
-            int virtualAddr = kernel->machine->ReadRegister(4);
+            int virtualAddr = kernel->machine->ReadRegister(4); // Doc tham so dia chi buffer
             char *name;
             name = User2System(virtualAddr, MAX_FILENAME_LENGTH + 1);
             SysExec(name);
@@ -296,7 +296,7 @@ void ExceptionHandler(ExceptionType which)
         case SC_Join:
         {
             int pid;
-            pid = kernel->machine->ReadRegister(4);
+            pid = kernel->machine->ReadRegister(4);         // Doc tham so id cua tien trinh
             kernel->machine->WriteRegister(2, SysJoin(pid));
             IncreasePC();
             return;
@@ -308,7 +308,7 @@ void ExceptionHandler(ExceptionType which)
         case SC_Exit:
         {
             int exitCode;
-            exitCode = kernel->machine->ReadRegister(4);
+            exitCode = kernel->machine->ReadRegister(4);    // Doc tham so exit code
             SysExit(exitCode);
             IncreasePC();
             return;
@@ -322,6 +322,7 @@ void ExceptionHandler(ExceptionType which)
             IncreasePC();
             return;
         }
+        // xu ly syscall CreateSemaphore
         case SC_CreateSemaphore:
         {
             int virtualAddr = kernel->machine->ReadRegister(4);
@@ -338,6 +339,7 @@ void ExceptionHandler(ExceptionType which)
             ASSERTNOTREACHED();
             break;
         }
+        // xu ly syscall Wait
         case SC_Wait:
         {
             int virtualAddr = kernel->machine->ReadRegister(4);
@@ -348,6 +350,7 @@ void ExceptionHandler(ExceptionType which)
             IncreasePC();
             return;
         }
+        // xu ly syscall Signal
         case SC_Signal:
         {
             int virtualAddr = kernel->machine->ReadRegister(4);
@@ -358,6 +361,7 @@ void ExceptionHandler(ExceptionType which)
             IncreasePC();
             return;
         }
+        // xu ly syscall Read
         case SC_Read:
         {
             int virtAddr = kernel->machine->ReadRegister(4);
@@ -376,16 +380,17 @@ void ExceptionHandler(ExceptionType which)
             IncreasePC();
             return;
         }
+        // xu ly syscall Write
         case SC_Write:
         {
             int virtAddr = kernel->machine->ReadRegister(4);
             int size = kernel->machine->ReadRegister(5);
             int id = kernel->machine->ReadRegister(6);
-
+            // Lay du lieu
             char *buffer = User2System(virtAddr, size);
-
+            // Ghi vao file
             int res = SysWrite(buffer, size, id);
-
+            // Ghi ket qua tra ve
             kernel->machine->WriteRegister(2, res);
             // if (res != -1 && res != -2)
             //     System2User(virtAddr, res, buffer);
@@ -394,9 +399,21 @@ void ExceptionHandler(ExceptionType which)
             IncreasePC();
             return;
         }
-        // Nhung system call chua duoc xu li thi se in ra thong bao loi
-        case SC_Create:
+        // xu ly syscall Seek
         case SC_Seek:
+        {
+            int position = kernel->machine->ReadRegister(4);
+            int id = kernel->machine->ReadRegister(5);
+            // Tim den vi tri va nhan ket qua tra ve
+            int res = SysSeek(position, id);
+            // Ghi ket qua tra ve
+            kernel->machine->WriteRegister(2, res);
+
+            IncreasePC();
+            return;
+        }
+        // Cac system call chua duoc xu li thi se in ra thong bao loi
+        case SC_Create:
         case SC_ThreadFork:
         case SC_ThreadYield:
         case SC_ExecV:
