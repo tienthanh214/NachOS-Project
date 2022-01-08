@@ -66,6 +66,51 @@ int ReadInt(int id, int *num)
     return HEAD_OF_LINE;
 }
 
+
+void WriteChar(int fileid,char* c){     //ghi mot ki tu
+    Write(c,1,fileid);
+    return;
+}
+
+int countdigit(int n){      //dem so chu so
+    int count = 1;
+    while (n >= 10) {
+        n=n/10;
+        count++;
+    }
+    return count;
+}
+
+int firstDigit(int n)       //chu so dau tien
+{
+    while (n >= 10) {
+        n=n/10;
+        }
+    return n;
+}
+
+int pow10(int a){       // luy thua 10
+    int i,r;
+    r=1;
+    for (i=0; i<a ;i++){
+        r = r*10;
+    }
+    return r;
+}
+
+void WriteNum(int fileid, int num){     //ghi mot so
+    int i, count,digit;
+    char ch;
+    count = countdigit(num);
+    for (i=0;i<count ;i++){         //ghi tung chu so tu trai sang phai
+        digit = firstDigit(num);
+        num = num - digit*pow10(count-i-1);
+        ch = digit +'0';
+        WriteChar(fileid, &ch);
+    }
+    return;
+}
+
 /* void WriteNum(file, int num);
     ghi num vao file
 */
