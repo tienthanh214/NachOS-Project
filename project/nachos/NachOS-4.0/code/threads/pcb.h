@@ -14,41 +14,40 @@ class Semaphore;
 
 class PCB {
    private:
-    Semaphore *joinsem;
-    Semaphore *exitsem;
-    Semaphore *multex;
+    Semaphore *joinsem; // semaphore cho qua trinh join
+    Semaphore *exitsem; // semaphore cho qua trinh join
+    Semaphore *multex;  // semaphore cho qua trinh join
 
-    Thread *thread;
-    char filename[MAX_FILENAME_LENGTH];
+    Thread *thread;     // Tien trinh
+    char filename[MAX_FILENAME_LENGTH]; // Ten tien trinh
 
     int exitcode;
-    int numwait;
+    int numwait;        // So tien trinh da join
 
    public:
-    int parentID;
-    bool isBG;
+    int parentID;       // ID cua tien trinh
+    bool isBG;  // Kiem tra xem co phai la tien trinh chay nen ko
     PCB();
     PCB(int id);
     ~PCB();
 
-    int Exec(char *filename, int pid);
+    int Exec(char *filename, int pid);  // Tao 1 thread moi
     int GetID();	
     int GetNumWait();
 
-    void JoinWait();	// tien trinh cha doi tien trinh con ket thuc
-    void ExitWait();	// tien trinh con xin ket thuc
-    void JoinRelease();	// tien trinh cha tiep tuc thuc thi
-    void ExitRelease();	// cho phep tien trinh con ket thuc
+    void JoinWait();	// Tien trinh cha doi tien trinh con ket thuc
+    void ExitWait();	// Tien trinh con xin ket thuc
+    void JoinRelease();	// Tien trinh cha tiep tuc thuc thi
+    void ExitRelease();	// Cho phep tien trinh con ket thuc
 
-    void IncNumWait();
+    void IncNumWait();  // Tang so tien trinh cho
+    void DecNumWait();  // Giam so tien tring cho
 
-    void DecNumWait();
+    void SetExitCode(int ec);   // Dat exitcode cho ca tien trinh
+    int GetExitCode();          // Lay exitcode cho ca tien trinh
 
-    void SetExitCode(int ec);
-    int GetExitCode();
-
-    void SetFileName(char *fn);
-    char *GetFileName();
+    void SetFileName(char *fn); // Dat filename cho ca tien trinh
+    char *GetFileName();        // Lay filename cho ca tien trinh
 };
 
 #endif

@@ -9,11 +9,12 @@
 
 void StartProcess_2(int id) {
     char *fileName = kernel->pTab->GetFileName(id);
+    // Tao ra khong gian dia chi moi
     AddrSpace *space;
     space = new AddrSpace();
-    
+    // Bao loi neu khong tao thanh cong
     if (space == NULL) {
-        printf("\nPCB::Exec: Can't create AddrSpace.");
+        printf("\nError in PCB::Exec: Can't create AddrSpace.");
         return;
     }
     if (space->Load(fileName)) {
@@ -24,6 +25,7 @@ void StartProcess_2(int id) {
 }
 
 PCB::PCB(int id) {
+    // Khoi tao cac phan tu
     if (id == 0)
         this->parentID = -1;
     else
@@ -36,6 +38,7 @@ PCB::PCB(int id) {
 }
 
 PCB::~PCB() {
+    // Giai phong cac bo nho da cap phat
     if (joinsem != NULL)
         delete this->joinsem;
     if (exitsem != NULL)
@@ -49,11 +52,8 @@ PCB::~PCB() {
 }
 
 int PCB::GetID() { return this->thread->processID; }
-
 int PCB::GetNumWait() { return this->numwait; }
-
 int PCB::GetExitCode() { return this->exitcode; }
-
 void PCB::SetExitCode(int ec) { this->exitcode = ec; }
 
 // chuyen tien trinh sang trang thai block
@@ -82,7 +82,7 @@ void PCB::IncNumWait() {
 
 void PCB::DecNumWait() {
     multex->P();
-    if (numwait > 0)
+    if (numwait > 0)    // numwait luon lon hon hoac bang 0
         --numwait;
     multex->V();
 }
@@ -92,10 +92,10 @@ void PCB::SetFileName(char *fn) { strcpy(filename, fn); }
 char *PCB::GetFileName() { return this->filename; }
 
 int PCB::Exec(char *filename, int pid) {
-    // Goi mutex->P() de tranh nap 2 tien trinh cung 1 thoi diem
+    // Tranh nap 2 tien trinh cung 1 thoi diem
     multex->P();
     this->thread = new Thread(filename);
-    // Neu thread tao khong thanh cong thi goi mutex->V()
+    // Neu thread tao khong thanh cong thi goi mutex->V() va tra ve -1
     if (this->thread == NULL) {
         multex->V();
         return -1;

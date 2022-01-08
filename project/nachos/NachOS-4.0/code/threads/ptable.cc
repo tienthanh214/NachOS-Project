@@ -6,6 +6,7 @@
 PTable::PTable(int size) {
     if (size < 0)
         return;
+    // Size khong vuot qua so process toi da 
     if (size > MAX_PROCESS)
         size = MAX_PROCESS;
     psize = size;
@@ -14,10 +15,10 @@ PTable::PTable(int size) {
     bmsem = new Semaphore("bmsem", 1);
     for (int i = 0; i < psize; ++i)
         pcb[i] = 0;
-    // initStartProcess(".");
 }
 
 void PTable::initStartProcess(char* name) {
+    // Danh dau tren tien trinh
     bm->Mark(0);
     pcb[0] = new PCB(0);
     pcb[0]->SetFileName(name);
@@ -25,43 +26,44 @@ void PTable::initStartProcess(char* name) {
 }
 
 PTable::~PTable() {
+    // Giai phong bo nho bm
     if (bm != 0)
         delete bm;
-
+    // Giai phong bo nho pcb
     for (int i = 0; i < psize; ++i) {
         if (pcb[i] != 0)
             delete pcb[i];
     }
-
+    // Giai phing bo nho bmsem
     if (bmsem != 0)
         delete bmsem;
 }
 
 int PTable::ExecUpdate(char *name) {
     bmsem->P();
-
+    // name phai khac NULL
     if (name == NULL) {
-        printf("\nPTable::ExecUpdate : Can't execute name is NULL.\n");
+        printf("\nError in PTable::ExecUpdate: Name is NULL.\n");
         bmsem->V();
         return -1;
     }
-
+    // Trung ten voi tien trinh hien tai
     if (strcmp(name, kernel->currentThread->getName()) == 0) {
-        printf("\nPTable::Exec : Can't execute itself.\n");
+        printf("\nError in PTable::Exec: Already existed.\n");
         bmsem->V();
         return -1;
     }
-
+    // Trung ten voi main thread
     if (strcmp(name, pcb[0]->GetFileName()) == 0) {
-        printf("\nPTable::ExecUpdate : Can't execute main process");
+        printf("\nError in PTable::ExecUpdate: Can not run main process");
         bmsem->V();
         return -1;
     }
 
     int index = this->GetFreeSlot();
-
+    // Khong con free slot
     if (index < 0) {
-        printf("\nPTable::Exec :There is no free slot.\n");
+        printf("\nError in PTable::Exec: No free slot.\n");
         bmsem->V();
         return -1;
     }
@@ -70,23 +72,22 @@ int PTable::ExecUpdate(char *name) {
     pcb[index]->SetFileName(name);
     pcb[index]->parentID = kernel->currentThread->processID;
     int pid = pcb[index]->Exec(name, index);
-    // printf("ptable: %d %d %d\n", index, pcb[index]->parentID, pid);
-
     bmsem->V();
     return pid;
 }
 
 int PTable::JoinUpdate(int id) {
+    // ID phai lon hon -1
     if (id < 0) {
-        printf("\nPTable::JoinUpdate : id = %d\n", id);
+        printf("\nError in PTable::JoinUpdate: Invalid id = %d\n", id);
         return -1;
     }
-    // chi cho phep join vao tien trinh cha 
+    // Chi cho phep join vao tien trinh cha 
     if (kernel->currentThread->processID != pcb[id]->parentID) {
-        printf("\nPTable::JoinUpdate Can't join in process which is not it's parent process.\n");
+        printf("\nError in PTable::JoinUpdate: Joining a non-parent process.\n");
         return -1;
     }
-
+    // Tang so tien trinh cho
     pcb[pcb[id]->parentID]->IncNumWait();
     pcb[id]->JoinWait();    // cho den khi tien trinh con ket thuc
     int ec = pcb[id]->GetExitCode();
@@ -105,7 +106,7 @@ int PTable::ExitUpdate(int exitcode) {
     }
     // neu khong ton tai process id
     if (IsExist(id) == false) {
-        printf("\nPTable::ExitUpdate: This %d is not exist. Try again?", id);
+        printf("\nError in PTable::ExitUpdate: This %d is not exist. Try again?", id);
         return -1;
     }
 

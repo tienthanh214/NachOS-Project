@@ -124,6 +124,7 @@ void SysPrintNum(int op1)
         kernel->synchConsoleOut->PutChar('0' + arr[j]);
     }
 }
+
 // Xu ly syscall ReadChar
 char SysReadChar()
 {
@@ -131,6 +132,7 @@ char SysReadChar()
     c = kernel->synchConsoleIn->GetChar();
     return c;
 }
+
 // Xu ly syscall PrintChar
 void SysPrintChar(char c)
 {
@@ -159,6 +161,9 @@ void SysReadString(char *buffer, int length)
     }
 }
 
+/* Xu ly syscall PrintString
+    Input: buffer de in ra mna hinh, length kich thuoc chuoi 
+*/
 int readString(char *buffer, int length)
 {
     int idx;
@@ -190,25 +195,27 @@ void SysPrintString(char *buffer)
         kernel->synchConsoleOut->PutChar(buffer[length++]);
     }
 }
+
 // Syscall tao file
 void SysCreateFile(char *filename)
 {
     if (strlen(filename) == 0)
     {
-        printf("\n File name is not valid");
-        DEBUG('a', "\n File name is not valid");
+        printf("File name is not valid\n");
+        DEBUG('a', "File name is not valid\n");
         kernel->machine->WriteRegister(2, -1); //Return -1 vao thanh ghi R2
         return;
     }
-    if (filename == NULL) //Neu khong doc duoc
+    //Neu khong doc duoc
+    if (filename == NULL)
     {
-        printf("\n Not enough memory in system");
-        DEBUG('a', "\n Not enough memory in system");
+        printf("\n Not enough memory in system\n");
+        DEBUG('a', "\n Not enough memory in system\n");
         kernel->machine->WriteRegister(2, -1);
         return;
     }
-
-    if (!kernel->fileSystem->Create(filename)) //Tao file bang ham Create cua fileSystem, tra ve ket qua
+    //Tao file bang ham Create cua fileSystem, tra ve ket qua
+    if (!kernel->fileSystem->Create(filename))
     {
         //Tao file that bai
         printf("\n Error create file '%s'", filename);
@@ -224,14 +231,15 @@ void SysCreateFile(char *filename)
 */
 void SysExec(char *name)
 {
+    // Khi name == NULL, thong bao loi
     if (name == NULL)
     {
-        DEBUG('a', "\n Not enough memory in System");
-        printf("\n Not enough memory in System");
+        DEBUG('a', "\n Name can not be NULL");
+        printf("\n Name can not be NULL");
         kernel->machine->WriteRegister(2, -1);
         return;
     }
-
+    // Mo mot file moi
     OpenFile *oFile = kernel->fileSystem->Open(name);
     if (oFile == NULL)
     {
@@ -265,9 +273,9 @@ void SysExit(int ec)
 void SysOpen(char *filename, int type)
 {
     int freeSlot = kernel->fileSystem->FindFreeSlot();
-    if (freeSlot != -1)     //Chi xu li khi con slot trong mang openf[]
+    if (freeSlot != -1) //Chi xu li khi con slot trong mang openf[]
     {
-        if (type == 0 || type == 1)     //chi xu li khi type = 0 hoac 1
+        if (type == 0 || type == 1) //chi xu li khi type = 0 hoac 1
         {
             if ((kernel->fileSystem->openf[freeSlot] = kernel->fileSystem->Open(filename, type)) != NULL) //Mo file thanh cong
             {
@@ -285,7 +293,7 @@ void SysOpen(char *filename, int type)
             kernel->machine->WriteRegister(2, 1); //tra ve OpenFileID
             return;
         }
-        kernel->machine->WriteRegister(2, -1);      // tra ve -1 neu filename khong ton tai
+        kernel->machine->WriteRegister(2, -1); // tra ve -1 neu filename khong ton tai
         return;
     }
     kernel->machine->WriteRegister(2, -1); //Khong mo duoc file return -1
@@ -370,5 +378,94 @@ int SysSignal(char *name)
     }
     return res;
 }
+
+// void SysRead(int virtAddr, int size, OpenFileId id)
+// {
+//     int oldPos, newPos;
+//     char *buffer;
+
+//     if (id < 0 || id > 9 || id == CONSOLE_OUTPUT)
+//     {
+//         kernel->machine->WriteRegister(2, -1);
+//         return;
+//     }
+
+//     if (kernel->fileSystem->openf[id] == NULL)
+//     {
+//         kernel->machine->WriteRegister(2, -1);
+//         return;
+//     }
+
+//     oldPos = kernel->fileSystem->openf[id]->GetCurrentPos();
+//     buffer = User2System(virtAddr, size);
+//     if (id == CONSOLE_INPUT)
+//     {
+//         int actualSize = readString(buffer, size);
+//         System2User(virtAddr, actualSize, buffer);
+//         kernel->machine->WriteRegister(2, actualSize);
+//     }
+//     else if ((kernel->fileSystem->openf[id]->Read(buffer, size)) > 0)
+//     {
+//         newPos = kernel->fileSystem->openf[id]->GetCurrentPos();
+//         System2User(virtAddr, newPos - oldPos, buffer);
+//         kernel->machine->WriteRegister(2, newPos - oldPos);
+//     }
+//     else
+//     {
+//         kernel->machine->WriteRegister(2, -2);
+//     }
+
+//     delete buffer;
+// }
+
+// void SysWrite(int virtAddr, int size, OpenFileId id)
+// {
+//     int oldPos, newPos;
+//     char *buffer;
+
+//     if (id < 0 || id > 9 || id == CONSOLE_INPUT)
+//     {
+//         kernel->machine->WriteRegister(2, -1);
+//         return;
+//     }
+
+//     if (kernel->fileSystem->openf[id] == NULL)
+//     {
+//         kernel->machine->WriteRegister(2, -1);
+//         return;
+//     }
+//     // Neu la file read only thi bao loi
+//     if (kernel->fileSystem->openf[id]->type == 1)
+//     {
+//         kernel->machine->WriteRegister(2, -1);
+//         return;
+//     }
+
+//     oldPos = kernel->fileSystem->openf[id]->GetCurrentPos();
+//     buffer = User2System(virtAddr, size);
+//     if (id == CONSOLE_OUTPUT)
+//     {
+//         int i = 0;
+//         while (buffer[i] != 0 && buffer[i] != '\n')
+//         {
+//             kernel->synchConsoleOut->PutChar(buffer[i]);
+//             i++;
+//         }
+//         buffer[i] = '\n';
+//         kernel->synchConsoleOut->PutChar(buffer[i]);
+//         kernel->machine->WriteRegister(2, i - 1);
+//     }
+//     else if ((kernel->fileSystem->openf[id]->Write(buffer, size)) > 0)
+//     {
+//         newPos = kernel->fileSystem->openf[id]->GetCurrentPos();
+//         kernel->machine->WriteRegister(2, newPos - oldPos);
+//     }
+//     else
+//     {
+//         kernel->machine->WriteRegister(2, -2);
+//     }
+
+//     delete buffer;
+// }
 
 #endif /* ! __USERPROG_KSYSCALL_H__ */

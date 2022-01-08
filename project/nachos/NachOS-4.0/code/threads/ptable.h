@@ -17,26 +17,26 @@ class Semaphore;
 
 class PTable {
 private:
-    Bitmap *bm;
+    Bitmap *bm;             // Danh dau cac vi tri da su dung
     PCB *pcb[MAX_PROCESS];
     int psize;
-    Semaphore *bmsem;
-
+    Semaphore *bmsem;       // Semaphore de ngan chan
+                            // 2 tien trinh nap cung luc
 public:
     PTable(int size);
     ~PTable();
 
 
-    int ExitUpdate(int ec);
-    int ExecUpdate(char *name);
-    int JoinUpdate(int id);
+    int ExitUpdate(int ec);     // Xu li syscall SC_Exit
+    int ExecUpdate(char *name); // Xu li syscall SC_Exec
+    int JoinUpdate(int id);     // XU li syscall SC_Join
 
-    bool IsExist(int pid);
-    int GetFreeSlot();
-    void Remove(int pid);
-    char *GetFileName(int id);
+    bool IsExist(int pid);      // Kiem tra xem co ton tai chua
+    int GetFreeSlot();          // Tim mot slot de luu tien trinh
+    void Remove(int pid);       // Xoa thong tin tien trinh
+    char *GetFileName(int id);  // Tra ve ten tien trinh
 
-    void initStartProcess(char* name);
+    void initStartProcess(char* name);  // Khoi chay tien trinh
 };
 
 #endif
