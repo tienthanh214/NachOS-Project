@@ -26,7 +26,7 @@ class PCB {
 
    public:
     int parentID;       // ID cua tien trinh
-    bool isBG;  // Kiem tra xem co phai la tien trinh chay nen ko
+    
     PCB();
     PCB(int id);
     ~PCB();

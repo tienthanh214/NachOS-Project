@@ -30,7 +30,7 @@ PCB::PCB(int id) {
         this->parentID = -1;
     else
         this->parentID = kernel->currentThread->processID;
-    this->numwait = this->exitcode = this->isBG = 0;
+    this->numwait = this->exitcode = 0;
     this->thread = NULL;
     this->joinsem = new Semaphore("joinsem", 0);
     this->exitsem = new Semaphore("exitsem", 0);
