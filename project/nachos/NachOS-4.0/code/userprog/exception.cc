@@ -245,7 +245,7 @@ void ExceptionHandler(ExceptionType which)
         }
         case SC_CreateFile:
         {
-       
+
             // Tao ra file voi tham so la ten file
             int virtAddr;
             char *filename;
@@ -258,13 +258,13 @@ void ExceptionHandler(ExceptionType which)
             return;
             //Tao file thanh cong
         }
-        case SC_Open:           // Mo mot file voi type read-and-write hoac only-read
+        case SC_Open: // Mo mot file voi type read-and-write hoac only-read
         {
-            int virtAddr = kernel->machine->ReadRegister(4);        // Doc tham so filename
-            int type = kernel->machine->ReadRegister(5);            // Doc tham so type
+            int virtAddr = kernel->machine->ReadRegister(4); // Doc tham so filename
+            int type = kernel->machine->ReadRegister(5);     // Doc tham so type
             char *filename;
-            filename = User2System(virtAddr, MAX_FILENAME_LENGTH + 1); 
-            SysOpen(filename, type);                                   //Mo file, tra ve type neu thanh cong, tra ve -1 neu that bai
+            filename = User2System(virtAddr, MAX_FILENAME_LENGTH + 1);
+            SysOpen(filename, type); //Mo file, tra ve type neu thanh cong, tra ve -1 neu that bai
             delete[] filename;
             IncreasePC();
             return;
@@ -273,7 +273,7 @@ void ExceptionHandler(ExceptionType which)
         case SC_Close:
         {
             int id = kernel->machine->ReadRegister(4); // Lay id cua file tu thanh ghi so 4
-            SysClose(id);                               // Dong file
+            SysClose(id);                              // Dong file
             IncreasePC();
             return;
             break;
@@ -357,41 +357,14 @@ void ExceptionHandler(ExceptionType which)
             int virtAddr = kernel->machine->ReadRegister(4);
             int size = kernel->machine->ReadRegister(5);
             int id = kernel->machine->ReadRegister(6);
-            int oldPos, newPos;
-            char *buffer;
 
-            if (id < 0 || id > 9 || id == CONSOLE_OUTPUT)
-            {
-                kernel->machine->WriteRegister(2, -1);
-                IncreasePC();
-                return;
-            }
+            char *buffer = User2System(virtAddr, size);
 
-            if (kernel->fileSystem->openf[id] == NULL)
-            {
-                kernel->machine->WriteRegister(2, -1);
-                IncreasePC();
-                return;
-            }
+            int res = SysRead(buffer, size, id);
 
-            oldPos = kernel->fileSystem->openf[id]->GetCurrentPos();
-            buffer = User2System(virtAddr, size);
-            if (id == CONSOLE_INPUT)
-            {
-                int actualSize = readString(buffer, size);
-                System2User(virtAddr, actualSize, buffer);
-                kernel->machine->WriteRegister(2, actualSize);
-            }
-            else if ((kernel->fileSystem->openf[id]->Read(buffer, size)) > 0)
-            {
-                newPos = kernel->fileSystem->openf[id]->GetCurrentPos();
-                System2User(virtAddr, newPos - oldPos, buffer);
-                kernel->machine->WriteRegister(2, newPos - oldPos);
-            }
-            else
-            {
-                kernel->machine->WriteRegister(2, -2);
-            }
+            kernel->machine->WriteRegister(2, res);
+            if (res != -1 && res != -2)
+                System2User(virtAddr, res, buffer);
 
             delete buffer;
             IncreasePC();
@@ -402,52 +375,14 @@ void ExceptionHandler(ExceptionType which)
             int virtAddr = kernel->machine->ReadRegister(4);
             int size = kernel->machine->ReadRegister(5);
             int id = kernel->machine->ReadRegister(6);
-            int oldPos, newPos;
-            char *buffer;
 
-            if (id < 0 || id > 9 || id == CONSOLE_INPUT)
-            {
-                kernel->machine->WriteRegister(2, -1);
-                IncreasePC();
-                return;
-            }
+            char *buffer = User2System(virtAddr, size);
 
-            if (kernel->fileSystem->openf[id] == NULL)
-            {
-                kernel->machine->WriteRegister(2, -1);
-                IncreasePC();
-                return;
-            }
-            // Neu la file read only thi bao loi
-            if (kernel->fileSystem->openf[id]->type == 1)
-            {
-                kernel->machine->WriteRegister(2, -1);
-                IncreasePC();
-                return;
-            }
-            oldPos = kernel->fileSystem->openf[id]->GetCurrentPos();
-            buffer = User2System(virtAddr, size);
-            if (id == CONSOLE_OUTPUT)
-            {
-                int i = 0;
-                while (buffer[i] != 0 && buffer[i] != '\n')
-                {
-                    kernel->synchConsoleOut->PutChar(buffer[i]);
-                    i++;
-                }
-                buffer[i] = '\n';
-                kernel->synchConsoleOut->PutChar(buffer[i]);
-                kernel->machine->WriteRegister(2, i - 1);
-            }
-            else if ((kernel->fileSystem->openf[id]->Write(buffer, size)) > 0)
-            {
-                newPos = kernel->fileSystem->openf[id]->GetCurrentPos();
-                kernel->machine->WriteRegister(2, newPos - oldPos);
-            }
-            else
-            {
-                kernel->machine->WriteRegister(2, -2);
-            }
+            int res = SysWrite(buffer, size, id);
+
+            kernel->machine->WriteRegister(2, res);
+            if (res != -1 && res != -2)
+                System2User(virtAddr, res, buffer);
 
             delete buffer;
             IncreasePC();

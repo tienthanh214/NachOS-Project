@@ -379,93 +379,62 @@ int SysSignal(char *name)
     return res;
 }
 
-// void SysRead(int virtAddr, int size, OpenFileId id)
-// {
-//     int oldPos, newPos;
-//     char *buffer;
+int SysRead(char *buffer, int size, OpenFileId id)
+{
+    int oldPos, newPos;
+    // Id cua file nam ngoai vung quan li
+    if (id < 0 || id > 9 || id == CONSOLE_OUTPUT)
+        return -1;
+    // File ko ton tai thi bao loi
+    if (kernel->fileSystem->openf[id] == NULL)
+        return -1;
 
-//     if (id < 0 || id > 9 || id == CONSOLE_OUTPUT)
-//     {
-//         kernel->machine->WriteRegister(2, -1);
-//         return;
-//     }
+    oldPos = kernel->fileSystem->openf[id]->GetCurrentPos();
+    if (id == CONSOLE_INPUT)
+    {
+        int actualSize = readString(buffer, size);
+        return actualSize;
+    }
+    if ((kernel->fileSystem->openf[id]->Read(buffer, size)) > 0)
+    {
+        newPos = kernel->fileSystem->openf[id]->GetCurrentPos();
+        return newPos - oldPos;
+    }
+    return -2;
+}
 
-//     if (kernel->fileSystem->openf[id] == NULL)
-//     {
-//         kernel->machine->WriteRegister(2, -1);
-//         return;
-//     }
+int SysWrite(char *buffer, int size, OpenFileId id)
+{
+    int oldPos, newPos;
+    // Id cua file nam ngoai vung quan li
+    if (id < 0 || id > 9 || id == CONSOLE_INPUT)
+        return -1;
+    // File ko ton tai thi bao loi
+    if (kernel->fileSystem->openf[id] == NULL)
+        return -1;
+    // Neu la file read only thi bao loi
+    if (kernel->fileSystem->openf[id]->type == 1)
+        return -1;
 
-//     oldPos = kernel->fileSystem->openf[id]->GetCurrentPos();
-//     buffer = User2System(virtAddr, size);
-//     if (id == CONSOLE_INPUT)
-//     {
-//         int actualSize = readString(buffer, size);
-//         System2User(virtAddr, actualSize, buffer);
-//         kernel->machine->WriteRegister(2, actualSize);
-//     }
-//     else if ((kernel->fileSystem->openf[id]->Read(buffer, size)) > 0)
-//     {
-//         newPos = kernel->fileSystem->openf[id]->GetCurrentPos();
-//         System2User(virtAddr, newPos - oldPos, buffer);
-//         kernel->machine->WriteRegister(2, newPos - oldPos);
-//     }
-//     else
-//     {
-//         kernel->machine->WriteRegister(2, -2);
-//     }
-
-//     delete buffer;
-// }
-
-// void SysWrite(int virtAddr, int size, OpenFileId id)
-// {
-//     int oldPos, newPos;
-//     char *buffer;
-
-//     if (id < 0 || id > 9 || id == CONSOLE_INPUT)
-//     {
-//         kernel->machine->WriteRegister(2, -1);
-//         return;
-//     }
-
-//     if (kernel->fileSystem->openf[id] == NULL)
-//     {
-//         kernel->machine->WriteRegister(2, -1);
-//         return;
-//     }
-//     // Neu la file read only thi bao loi
-//     if (kernel->fileSystem->openf[id]->type == 1)
-//     {
-//         kernel->machine->WriteRegister(2, -1);
-//         return;
-//     }
-
-//     oldPos = kernel->fileSystem->openf[id]->GetCurrentPos();
-//     buffer = User2System(virtAddr, size);
-//     if (id == CONSOLE_OUTPUT)
-//     {
-//         int i = 0;
-//         while (buffer[i] != 0 && buffer[i] != '\n')
-//         {
-//             kernel->synchConsoleOut->PutChar(buffer[i]);
-//             i++;
-//         }
-//         buffer[i] = '\n';
-//         kernel->synchConsoleOut->PutChar(buffer[i]);
-//         kernel->machine->WriteRegister(2, i - 1);
-//     }
-//     else if ((kernel->fileSystem->openf[id]->Write(buffer, size)) > 0)
-//     {
-//         newPos = kernel->fileSystem->openf[id]->GetCurrentPos();
-//         kernel->machine->WriteRegister(2, newPos - oldPos);
-//     }
-//     else
-//     {
-//         kernel->machine->WriteRegister(2, -2);
-//     }
-
-//     delete buffer;
-// }
+    oldPos = kernel->fileSystem->openf[id]->GetCurrentPos();
+    if (id == CONSOLE_OUTPUT)
+    {
+        int i = 0;
+        while (buffer[i] != 0 && buffer[i] != '\n')
+        {
+            kernel->synchConsoleOut->PutChar(buffer[i]);
+            i++;
+        }
+        buffer[i] = '\n';
+        kernel->synchConsoleOut->PutChar(buffer[i]);
+        return i - 1;
+    }
+    if ((kernel->fileSystem->openf[id]->Write(buffer, size)) > 0)
+    {
+        newPos = kernel->fileSystem->openf[id]->GetCurrentPos();
+        return newPos - oldPos;
+    }
+    return -2;
+}
 
 #endif /* ! __USERPROG_KSYSCALL_H__ */
