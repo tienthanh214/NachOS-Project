@@ -209,8 +209,8 @@ void SysCreateFile(char *filename)
     //Neu khong doc duoc
     if (filename == NULL)
     {
-        printf("\n Not enough memory in system\n");
-        DEBUG('a', "\n Not enough memory in system\n");
+        printf("Not enough memory in system\n");
+        DEBUG('a', "Not enough memory in system\n");
         kernel->machine->WriteRegister(2, -1);
         return;
     }
@@ -218,7 +218,7 @@ void SysCreateFile(char *filename)
     if (!kernel->fileSystem->Create(filename))
     {
         //Tao file that bai
-        printf("\n Error create file '%s'", filename);
+        printf("Error create file '%s'", filename);
         kernel->machine->WriteRegister(2, -1);
         return;
     }
@@ -234,8 +234,8 @@ void SysExec(char *name)
     // Khi name == NULL, thong bao loi
     if (name == NULL)
     {
-        DEBUG('a', "\n Name can not be NULL");
-        printf("\n Name can not be NULL");
+        DEBUG('a', "Name can not be NULL");
+        printf("Name can not be NULL");
         kernel->machine->WriteRegister(2, -1);
         return;
     }
@@ -243,7 +243,7 @@ void SysExec(char *name)
     OpenFile *oFile = kernel->fileSystem->Open(name);
     if (oFile == NULL)
     {
-        printf("\nExec:: Can't open this file.");
+        printf("Can't open this file.\n");
         kernel->machine->WriteRegister(2, -1);
         return;
     }
@@ -292,14 +292,14 @@ int SysCreateSemaphore(char *name, int semVal)
 {
     if (name == NULL)
     {
-        DEBUG('a', "\n Not enough memory in System");
-        printf("\n Not enough memory in System");
+        DEBUG('a', "Not enough memory in System\n");
+        printf("Not enough memory in System\n");
         return -1;
     }
     int res = kernel->semTab->Create(name, semVal);
     if (res == -1)
     {
-        printf("\n Can't create semaphore.");
+        printf("Can't create semaphore.\n");
         return -1;
     }
     return res;
@@ -313,14 +313,14 @@ int SysWait(char *name)
 {
     if (name == NULL)
     {
-        DEBUG('a', "\n Not enough memory in System");
-        printf("\n Not enough memory in System");
+        DEBUG('a', "Not enough memory in System\n");
+        printf("Not enough memory in System\n");
         return -1;
     }
     int res = kernel->semTab->Wait(name);
     if (res == -1)
     {
-        printf("\nSemaphore %s doesn't exist.", name);
+        printf("Semaphore %s doesn't exist.\n", name);
         return -1;
     }
     return res;
@@ -334,14 +334,14 @@ int SysSignal(char *name)
 {
     if (name == NULL)
     {
-        DEBUG('a', "\n Not enough memory in System");
-        printf("\n Not enough memory in System");
+        DEBUG('a', "Not enough memory in System\n");
+        printf("Not enough memory in System\n");
         return -1;
     }
     int res = kernel->semTab->Signal(name);
     if (res == -1)
     {
-        printf("\nSemaphore %s doesn't exist.", name);
+        printf("Semaphore %s doesn't exist.\n", name);
         return -1;
     }
     return res;

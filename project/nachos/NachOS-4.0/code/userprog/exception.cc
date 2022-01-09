@@ -180,8 +180,8 @@ void ExceptionHandler(ExceptionType which)
         case SC_ReadChar:
         {
             char c;
-            c = SysReadChar();                    //read a character
-            kernel->machine->WriteRegister(2, c); //write the return value to register 2
+            c = SysReadChar();                    // read a character
+            kernel->machine->WriteRegister(2, c); // write the return value to register 2
 
             IncreasePC();
 
@@ -192,8 +192,8 @@ void ExceptionHandler(ExceptionType which)
         // xu ly syscall PrintChar
         case SC_PrintChar:
         {
-            char c = kernel->machine->ReadRegister(4); //get the character to print from register 4
-            SysPrintChar(c);                           //print character
+            char c = kernel->machine->ReadRegister(4); // get the character to print from register 4
+            SysPrintChar(c);                           // print character
 
             IncreasePC();
 
@@ -250,7 +250,7 @@ void ExceptionHandler(ExceptionType which)
             int virtAddr;
             char *filename;
             virtAddr = kernel->machine->ReadRegister(4); //Doc dia chi cua file tu thanh ghi R4
-            filename = User2System(virtAddr, MaxFileLength + 1);
+            filename = User2System(virtAddr, MaxFileLength + 1); // return string to User space
             SysCreateFile(filename);
             delete[] filename;
 
@@ -273,9 +273,9 @@ void ExceptionHandler(ExceptionType which)
         }
         case SC_Close:
         {
-            int id = kernel->machine->ReadRegister(4); // Lay id cua file tu thanh ghi so 4
-            int result = SysClose(id);                              // Dong file
-            kernel->machine->WriteRegister(2, result);
+            int id = kernel->machine->ReadRegister(4);  // Lay id cua file tu thanh ghi so 4
+            int result = SysClose(id);                  // Goi ham dong file
+            kernel->machine->WriteRegister(2, result);  // Tra ve ket qua vao thanh ghi so 2
             IncreasePC();
             return;
             break;
@@ -284,9 +284,9 @@ void ExceptionHandler(ExceptionType which)
         {
             int virtualAddr = kernel->machine->ReadRegister(4); // Doc tham so dia chi buffer
             char *name;
-            name = User2System(virtualAddr, MAX_FILENAME_LENGTH + 1);
+            name = User2System(virtualAddr, MAX_FILENAME_LENGTH + 1);   // Lay ten file 
             SysExec(name);
-            if (name != NULL)
+            if (name != NULL)   // Neu ten file khac null thi giai phong bo nho
                 delete[] name;
             IncreasePC();
             return;
@@ -299,7 +299,7 @@ void ExceptionHandler(ExceptionType which)
         {
             int pid;
             pid = kernel->machine->ReadRegister(4);         // Doc tham so id cua tien trinh
-            kernel->machine->WriteRegister(2, SysJoin(pid));
+            kernel->machine->WriteRegister(2, SysJoin(pid));// Ghi ket qua tu viec goi ham SysJoin 
             IncreasePC();
             return;
 

@@ -18,43 +18,38 @@
 /* system call codes -- used by the stubs to tell the kernel which system call
  * is being asked for
  */
-#define SC_Halt		    0
-#define SC_Exit		    1
-#define SC_Exec		    2
-#define SC_Join		    3
+#define SC_Halt 0
+#define SC_Exit 1
+#define SC_Exec 2
+#define SC_Join 3
 
-
-#define SC_Create       4
-#define SC_Remove       5
-#define SC_Open		    6
-#define SC_Read		    7
-#define SC_Write	    8
-#define SC_Seek         9
-#define SC_Close	    10
-#define SC_ThreadFork	11
-#define SC_ThreadYield	12
-#define SC_ExecV	    13
-#define SC_ThreadExit   14
-#define SC_ThreadJoin   15
+#define SC_Create 4
+#define SC_Remove 5
+#define SC_Open 6
+#define SC_Read 7
+#define SC_Write 8
+#define SC_Seek 9
+#define SC_Close 10
+#define SC_ThreadFork 11
+#define SC_ThreadYield 12
+#define SC_ExecV 13
+#define SC_ThreadExit 14
+#define SC_ThreadJoin 15
 // syscall semaphore
-#define SC_CreateSemaphore  16
-#define SC_Wait             17
-#define SC_Signal           18
-#define SC_GetPID           19
-
-#define SC_Add		    42
-
-#define SC_ReadNum      43
-#define SC_PrintNum     44
-#define SC_ReadChar     45
-#define SC_PrintChar    46
-#define SC_RandomNum    47
-#define SC_ReadString   48
-#define SC_PrintString  49
-#define SC_CreateFile	50
-// define CreateFile syscall
-
-
+#define SC_CreateSemaphore 16
+#define SC_Wait 17
+#define SC_Signal 18
+#define SC_GetPID 19
+// syscall console and file
+#define SC_Add 42
+#define SC_ReadNum 43
+#define SC_PrintNum 44
+#define SC_ReadChar 45
+#define SC_PrintChar 46
+#define SC_RandomNum 47
+#define SC_ReadString 48
+#define SC_PrintString 49
+#define SC_CreateFile 50
 
 #ifndef IN_ASM
 
@@ -69,10 +64,9 @@
  */
 
 /* Stop Nachos, and print out performance stats */
-void Halt();		
+void Halt();
 
-
-/* ==================== 1 ========================== */
+/* ====================================================== */
 // Nhung system call do sinh vien them vao
 int ReadNum();
 
@@ -88,49 +82,47 @@ void ReadString(char[], int);
 
 void PrintString(char[]);
 
-int CreateFile(char* name);
+int CreateFile(char *name);
 
-int CreateSemaphore(char* name, int value);
+int CreateSemaphore(char *name, int value);
 
-int Signal(char* name);
+int Signal(char *name);
 
-int Wait(char* name);
-/*======================================================*/
-
+int Wait(char *name);
+/* ====================================================== */
 
 /*
  * Add the two operants and return the result
- */ 
+ */
 
 int Add(int op1, int op2);
 
 /* Address space control operations: Exit, Exec, Execv, and Join */
 
 /* This user program is done (status = 0 means exited normally). */
-void Exit(int status);	
+void Exit(int status);
 
 /* A unique identifier for an executing user program (address space) */
-typedef int SpaceId;	
+typedef int SpaceId;
 
 /* A unique identifier for a thread within a task */
 typedef int ThreadId;
 
 /* Run the specified executable, with no args */
 /* This can be implemented as a call to ExecV.
- */ 
-SpaceId Exec(char* exec_name);
+ */
+SpaceId Exec(char *exec_name);
 
 /* Run the executable, stored in the Nachos file "argv[0]", with
  * parameters stored in argv[1..argc-1] and return the 
  * address space identifier
  */
-SpaceId ExecV(int argc, char* argv[]);
- 
+SpaceId ExecV(int argc, char *argv[]);
+
 /* Only return once the user program "id" has finished.  
  * Return the exit status.
  */
-int Join(SpaceId id); 	
- 
+int Join(SpaceId id);
 
 /* File system operations: Create, Remove, Open, Read, Write, Close
  * These functions are patterned after UNIX -- files represent
@@ -140,9 +132,9 @@ int Join(SpaceId id);
  * can be used to support these system calls if the regular Nachos
  * file system has not been implemented.
  */
- 
+
 /* A unique identifier for an open Nachos file. */
-typedef int OpenFileId;	
+typedef int OpenFileId;
 
 /* when an address space starts up, it has two open files, representing 
  * keyboard input and display output (in UNIX terms, stdin and stdout).
@@ -150,15 +142,14 @@ typedef int OpenFileId;
  * the console device.
  */
 
-#define CONSOLE_INPUT	0  
-#define CONSOLE_OUTPUT	1  
- 
+#define CONSOLE_INPUT 0
+#define CONSOLE_OUTPUT 1
+
 /* Create a Nachos file, with name "name" */
 /* Note: Create does not open the file.   */
 /* Return 1 on success, negative error code on failure */
 
 int Create(char *name);
-
 
 /* Remove a Nachos file, with name "name" */
 int Remove(char *name);
@@ -192,7 +183,6 @@ int Seek(int position, OpenFileId id);
  */
 int Close(OpenFileId id);
 
-
 /* User-level thread operations: Fork and Yield.  To allow multiple
  * threads to run within a user program. 
  *
@@ -208,7 +198,7 @@ ThreadId ThreadFork(void (*func)());
 /* Yield the CPU to another runnable thread, whether in this address space 
  * or not. 
  */
-void ThreadYield();	
+void ThreadYield();
 
 /*
  * Blocks current thread until lokal thread ThreadID exits with ThreadExit.
@@ -219,9 +209,8 @@ int ThreadJoin(ThreadId id);
 /*
  * Deletes current thread and returns ExitCode to every waiting lokal thread.
  */
-void ThreadExit(int ExitCode);	
+void ThreadExit(int ExitCode);
 
 #endif /* IN_ASM */
 
 #endif /* SYSCALL_H */
-
