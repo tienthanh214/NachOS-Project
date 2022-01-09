@@ -213,7 +213,7 @@ int readString(char *buffer, int length)
             break;
         buffer[idx++] = ch;
     }
-    buffer[idx++] = '\0';
+    buffer[idx + 1] = '\0';
     return idx;
 }
 
@@ -286,7 +286,7 @@ int PCB::Write(char *buffer, int size, OpenFileID id)
     if (id == CONSOLE_OUTPUT)
     {
         int i = 0;
-        while (buffer[i] != 0 && buffer[i] != '\n')
+        while (buffer[i] != 0 && buffer[i] != '\n' && i < size)
         {
             // Ghi tung ki tu va dem so ki tu
             kernel->synchConsoleOut->PutChar(buffer[i]);
@@ -295,7 +295,7 @@ int PCB::Write(char *buffer, int size, OpenFileID id)
         // Them ki tu xuong dong o cuoi
         buffer[i] = '\n';
         kernel->synchConsoleOut->PutChar(buffer[i]);
-        return i - 1;
+        return i;
     }
     if ((this->fileTable[id]->Write(buffer, size)) > 0)
     {
