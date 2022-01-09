@@ -1,5 +1,6 @@
-/* student.c
-    Sinh vien yeu cau uong nuoc
+/* student_1.c
+    Tien trinh Sinh vien yeu cau uong nuoc
+
 */
 
 #include "syscall.h"
@@ -25,23 +26,24 @@ int main() {
     
     // ---------- lay nuoc ---------------
     Wait("faucet"); // chi toi da 2 sinh vien duoc vao
-    // gui yeu cau den pipe cung cap nuoc
+    // gui yeu cau den Voi nuoc de duoc cung cap voi nuoc
     Wait("pipe_mutex");
     if (CreateFile("request.txt") == -1) {
         PrintString("\nCan't create file request.txt\n");
         Exit(1);
     } 
     fRequest = Open("request.txt", 0);
-    WriteNum(fRequest, 0);     // yeu cau lay nuoc
+    // yeu cau lay nuoc gui cho tien trinh Voi nuoc
+    WriteNum(fRequest, 0);     
     WriteChar(fRequest, ' ');
     WriteNum(fRequest, value);
     Close(fRequest);
-
-    Signal("request_water"); // yeu cau process pipe de lay nuoc
+    
+    Signal("request_water"); // yeu cau process Voi nuoc de lay nuoc
     Wait("open_water"); // doi den khi duoc phep uong nuoc
     // nhan ket qua tra ve tu process pipe
     fFaucet = Open("faucet.txt", 1);
-    ReadInt(fFaucet, &faucetId);
+    ReadInt(fFaucet, &faucetId);    // sinh vien duoc cung cap voi faucetId
     Close(fFaucet);
     Signal("pipe_mutex");   // doc xuat file hoan tat   
 
@@ -61,11 +63,7 @@ int main() {
 
     // ------ tra lai voi nuoc  ---------
     Wait("pipe_mutex");
-    // if (CreateFile("request.txt") == -1) {
-    //     PrintString("\nCan't remove data in file request.txt\n");
-    //     Exit(1);
-    // } 
-    
+
     // gui yeu cau tra lai voi nuoc
     fRequest = Open("request.txt", 0);
 
@@ -73,7 +71,7 @@ int main() {
     WriteChar(fRequest, ' ');
     WriteNum(fRequest, faucetId - 1);
     Close(fRequest);
-    // 
+    
     Signal("request_water"); // gui request tra lai nuoc cho pipe
     Wait("open_water"); // cho den khi da tra xong
     Signal("pipe_mutex");   // doc xuat file hoan tat    

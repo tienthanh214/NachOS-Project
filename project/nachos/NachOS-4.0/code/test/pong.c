@@ -1,3 +1,8 @@
+/*
+    Test semaphore and multithread
+    print 1000 character 'B'
+*/
+
 #include "syscall.h"
 
 int main() {

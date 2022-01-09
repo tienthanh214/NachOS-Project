@@ -21,13 +21,13 @@ private:
     PCB *pcb[MAX_PROCESS];
     int psize;
     Semaphore *bmsem;       // Semaphore de ngan chan
-                            // 2 tien trinh nap cung luc
+                            //   2 tien trinh nap cung luc
 public:
     PTable(int size);
     ~PTable();
 
 
-    void ExitUpdate(int ec);     // Xu li syscall SC_Exit
+    void ExitUpdate(int ec);    // Xu li syscall SC_Exit
     int ExecUpdate(char *name); // Xu li syscall SC_Exec
     int JoinUpdate(int id);     // XU li syscall SC_Join
 
@@ -38,11 +38,11 @@ public:
 
     void initStartProcess(char* name);  // Khoi chay tien trinh
    
-    OpenFileID Open(int pid, char*name, int type);
-    int Close(int pid, OpenFileID fid);
-    int Read(int pid, char* buffer,int charcount, OpenFileID fid);
-    int Write(int pid, char* buffer, int charcount, OpenFileID fid);
-    int Seek(int pid, int position, OpenFileID fid);
+    OpenFileID Open(int pid, char*name, int type);  // mo file name o tien trinh pid
+    int Close(int pid, OpenFileID fid); // dong file fid o tien trinh pid
+    int Read(int pid, char* buffer,int charcount, OpenFileID fid);      // doc file o tien trinh pid
+    int Write(int pid, char* buffer, int charcount, OpenFileID fid);    // ghi file o tien trinh pid
+    int Seek(int pid, int position, OpenFileID fid);    // seek file fid o tien trinh pid
 };
 
 #endif

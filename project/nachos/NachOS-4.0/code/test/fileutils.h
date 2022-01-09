@@ -1,3 +1,10 @@
+/*
+    chuong trinh ho tro cac ham doc ghi file
+    - doc so nguyen
+    - ghi so nguyen
+    - ghi ki tu
+*/
+
 #ifndef FILE_UTILS_H
 #define FILE_UTILS_H
 

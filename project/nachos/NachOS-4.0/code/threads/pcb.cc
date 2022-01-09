@@ -142,6 +142,9 @@ int PCB::Exec(char *filename, int pid)
     // Tra ve id
     return pid;
 }
+
+// ---- file table quan ly file ----
+
 int PCB::FindFreeSlot()
 {
     for (int i = 2; i < 10; i++)
@@ -166,7 +169,7 @@ OpenFileID PCB::Open(char *name, int type)
         }
     }
     int freeSlot = this->FindFreeSlot();
-    if (freeSlot != -1) //Chi xu li khi con slot trong mang openf[]
+    if (freeSlot != -1) //Chi xu li khi con slot trong
     {
         if (type == 0 || type == 1) //chi xu li khi type = 0 hoac 1
         {
@@ -187,7 +190,7 @@ int PCB::Close(OpenFileID id)
 {
     if (id >= 0 && id <= 9) //Chi xu li khi file id nam trong [0, 9]
     {
-        if (fileTable[id]) //neu mo file thanh cong
+        if (fileTable[id]) //neu da mo file thanh cong
         {
             delete fileTable[id]; //Xoa vung nho luu tru file
             fileTable[id] = NULL; //Gan vung nho NULL

@@ -2,7 +2,7 @@
 
 // Cau h: In bang ma ASCII
 int main() {
-    int i;
+    int i = 5;
 
     // Ten bang ma ASCII
     PrintString("Bang ma ASCII:");

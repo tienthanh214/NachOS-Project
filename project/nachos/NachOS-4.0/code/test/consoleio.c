@@ -1,3 +1,7 @@
+/*
+    Chuong trinh test doc ghi file
+*/
+
 #include "syscall.h"
 
 int main()

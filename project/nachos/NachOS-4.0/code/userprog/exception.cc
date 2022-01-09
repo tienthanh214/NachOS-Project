@@ -243,6 +243,7 @@ void ExceptionHandler(ExceptionType which)
             ASSERTNOTREACHED();
             break;
         }
+        // xuly syscall CreateFile tao file
         case SC_CreateFile:
         {
 
@@ -258,6 +259,7 @@ void ExceptionHandler(ExceptionType which)
             return;
             //Tao file thanh cong
         }
+        // xu ly syscall Open mo file
         case SC_Open: // Mo mot file voi type read-and-write hoac only-read
         {
             int virtAddr = kernel->machine->ReadRegister(4); // Doc tham so filename
@@ -271,6 +273,7 @@ void ExceptionHandler(ExceptionType which)
             return;
             break;
         }
+        // xu ly syscall Close dong file
         case SC_Close:
         {
             int id = kernel->machine->ReadRegister(4);  // Lay id cua file tu thanh ghi so 4
@@ -280,6 +283,7 @@ void ExceptionHandler(ExceptionType which)
             return;
             break;
         }
+        // xu ly syscall Exec thuc thi mot tien trinh
         case SC_Exec:
         {
             int virtualAddr = kernel->machine->ReadRegister(4); // Doc tham so dia chi buffer
@@ -306,7 +310,7 @@ void ExceptionHandler(ExceptionType which)
             ASSERTNOTREACHED();
             break;
         }
-        // xu ly syscall Exit
+        // xu ly syscall Exit dung tien trinh
         case SC_Exit:
         {
             int exitCode;
@@ -318,6 +322,7 @@ void ExceptionHandler(ExceptionType which)
             ASSERTNOTREACHED();
             break;
         }
+        // xu ly syscall GetPID lay process id
         case SC_GetPID:
         {
             kernel->machine->WriteRegister(2, kernel->currentThread->processID);
@@ -363,7 +368,7 @@ void ExceptionHandler(ExceptionType which)
             IncreasePC();
             return;
         }
-        // xu ly syscall Read
+        // xu ly syscall Read file
         case SC_Read:
         {
             int virtAddr = kernel->machine->ReadRegister(4);
@@ -382,7 +387,7 @@ void ExceptionHandler(ExceptionType which)
             IncreasePC();
             return;
         }
-        // xu ly syscall Write
+        // xu ly syscall Write file
         case SC_Write:
         {
             int virtAddr = kernel->machine->ReadRegister(4);
@@ -394,8 +399,6 @@ void ExceptionHandler(ExceptionType which)
             int res = SysWrite(buffer, size, id);
             // Ghi ket qua tra ve
             kernel->machine->WriteRegister(2, res);
-            // if (res != -1 && res != -2)
-            //     System2User(virtAddr, res, buffer);
 
             delete buffer;
             IncreasePC();

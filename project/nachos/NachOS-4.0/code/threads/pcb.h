@@ -26,7 +26,7 @@ class PCB {
 
    public:
     int parentID;       // ID cua tien trinh
-    OpenFile** fileTable;
+    OpenFile** fileTable;   // quan ly cac file cua tien trinh
     int index;
     
     PCB();
@@ -52,11 +52,11 @@ class PCB {
     char *GetFileName();        // Lay filename cho ca tien trinh
 
     int FindFreeSlot();         // Tim vi tri con trong de luu file can open
-    OpenFileID Open(char*name, int type);
-    int Close(OpenFileID fid);
-    int Read(char* buffer, int charcount, OpenFileID id);
-    int Write(char* buffer, int charcount, OpenFileID id);
-    int Seek(int position, OpenFileID id);
+    OpenFileID Open(char*name, int type);   // mo file name
+    int Close(OpenFileID fid);              // dong file fid
+    int Read(char* buffer, int charcount, OpenFileID id);   // doc file vao buffer
+    int Write(char* buffer, int charcount, OpenFileID id);  // ghi file vao buffer
+    int Seek(int position, OpenFileID id);  // seek den vi tri position cua file id
 };
 
 #endif

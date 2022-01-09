@@ -70,22 +70,12 @@ SwapHeader (NoffHeader *noffH)
 //	only uniprogramming, and we have a single unsegmented page table
 //----------------------------------------------------------------------
 
+/*
+    Now support multiprogramming
+*/
 AddrSpace::AddrSpace()
 {
     numPages = 0;
-    // remove this code for multiprogramming
-    // pageTable = new TranslationEntry[NumPhysPages];
-    // for (int i = 0; i < NumPhysPages; i++) {
-    //     pageTable[i].virtualPage = i;	// for now, virt page # = phys page #
-    //     pageTable[i].physicalPage = kernel->gPhysPageBitMap->FindAndSet();  // tim trang trong
-    //     pageTable[i].valid = TRUE;
-    //     pageTable[i].use = FALSE;
-    //     pageTable[i].dirty = FALSE;
-    //     pageTable[i].readOnly = FALSE;  
-    // }
-    
-    // // zero out the entire address space
-    // bzero(kernel->machine->mainMemory, MemorySize);
 }
 
 //----------------------------------------------------------------------
@@ -113,7 +103,7 @@ AddrSpace::~AddrSpace()
 //----------------------------------------------------------------------
 
 /*
-    modify this now can multiprogramming
+    modified this, now can multiprogramming
 */
 
 bool 
@@ -152,7 +142,7 @@ AddrSpace::Load(char *fileName)
 #endif
     numPages = divRoundUp(size, PageSize);
     size = numPages * PageSize;
-    // printf("\nNumpage = %d\n", numPages);
+    
     ASSERT(numPages <= NumPhysPages);		// check we're not trying
 						// to run anything too big --
 						// at least until we have
@@ -233,7 +223,7 @@ AddrSpace::Load(char *fileName)
     if (noffH.readonlyData.size > 0) {
         DEBUG(dbgAddr, "Initializing read only data segment.");
 	    DEBUG(dbgAddr, noffH.readonlyData.virtualAddr << ", " << noffH.readonlyData.size);
-        int offset = (noffH.readonlyData.virtualAddr - 1) % PageSize + 1;
+        int offset = (noffH.code.size + noffH.initData.size - 1) % PageSize + 1;
         int firstReadDataSize = min(
             PageSize - offset,
             noffH.readonlyData.size);
