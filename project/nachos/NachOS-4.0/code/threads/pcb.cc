@@ -8,9 +8,7 @@
 #include "synchconsole.h"
 #include "syscall.h"
 
-// extern void StartProcess_2(void* arg);
-
-void StartProcess_2(int id)
+void StartProcess(int id)
 {
     char *fileName = kernel->pTab->GetFileName(id);
     // Tao ra khong gian dia chi moi
@@ -19,7 +17,7 @@ void StartProcess_2(int id)
     // Bao loi neu khong tao thanh cong
     if (space == NULL)
     {
-        printf("\nError in PCB::Exec: Can't create AddrSpace.");
+        printf("\nError in StartProcess: Can't create AddrSpace.");
         return;
     }
     if (space->Load(fileName))
@@ -131,6 +129,7 @@ int PCB::Exec(char *filename, int pid)
     if (this->thread == NULL)
     {
         multex->V();
+        printf("\nError in PCB::Exec: Can't create AddrSpace.");
         return -1;
     }
     // Dat processID cua thread nay la id.
@@ -138,7 +137,7 @@ int PCB::Exec(char *filename, int pid)
     // Dat parrentID cua thread này la processID cua thread goi thuc thi Exec
     this->parentID = kernel->currentThread->processID;
     // Goi thuc thi
-    this->thread->Fork((VoidFunctionPtr)&StartProcess_2, (void *)pid);
+    this->thread->Fork((VoidFunctionPtr)&StartProcess, (void *)pid);
     multex->V();
     // Tra ve id
     return pid;
@@ -161,7 +160,10 @@ OpenFileID PCB::Open(char *name, int type)
             continue;
         char *openName = fileTable[i]->GetFilename();
         if (openName != NULL && strcmp(openName, name) == 0)
+        {
+            printf("\nError in PCB::Open: name invalid.");
             return -1;
+        }
     }
     int freeSlot = this->FindFreeSlot();
     if (freeSlot != -1) //Chi xu li khi con slot trong mang openf[]
@@ -219,12 +221,24 @@ int PCB::Read(char *buffer, int size, OpenFileID id)
 {
     int oldPos, newPos;
     // Id cua file nam ngoai vung quan li
-    if (id < 0 || id > 9 || id == CONSOLE_OUTPUT)
+    if (id < 0 || id > 9)
+    {
+        printf("\nError in PCB::Read: file id out of range.");
         return -1;
+    }
+    // Doc trong stdout
+    if (id == CONSOLE_OUTPUT)
+    {
+        printf("\nError in PCB::Read: cannot read in console output.");
+        return -1;
+    }
     // File ko ton tai thi bao loi
     if (fileTable[id] == NULL)
+    {
+        printf("\nError in PCB::Read: file is null.");
         return -1;
-
+    }
+    // Lay vi tri ban dau
     oldPos = fileTable[id]->GetCurrentPos();
     if (id == CONSOLE_INPUT)
     {
@@ -233,6 +247,7 @@ int PCB::Read(char *buffer, int size, OpenFileID id)
     }
     if ((fileTable[id]->Read(buffer, size)) > 0)
     {
+        // Lay vi tri moi
         newPos = fileTable[id]->GetCurrentPos();
         return newPos - oldPos;
     }
@@ -243,30 +258,48 @@ int PCB::Write(char *buffer, int size, OpenFileID id)
 {
     int oldPos, newPos;
     // Id cua file nam ngoai vung quan li
-    if (id < 0 || id > 9 || id == CONSOLE_INPUT)
+    if (id < 0 || id > 9)
+    {
+        printf("\nError in PCB::Write: file id out of range.");
         return -1;
+    }
+    // Ghi trong stdin
+    if (id == CONSOLE_INPUT)
+    {
+        printf("\nError in PCB::Write: cannot write in console input.");
+        return -1;
+    }
     // File ko ton tai thi bao loi
     if (fileTable[id] == NULL)
+    {
+        printf("\nError in PCB::Write: file is null.");
         return -1;
+    }
     // Neu la file read only thi bao loi
     if (fileTable[id]->type == 1)
+    {
+        printf("\nError in PCB::Write: file is read only.");
         return -1;
-
+    }
+    // Lay vi tri ban dau
     oldPos = fileTable[id]->GetCurrentPos();
     if (id == CONSOLE_OUTPUT)
     {
         int i = 0;
         while (buffer[i] != 0 && buffer[i] != '\n')
         {
+            // Ghi tung ki tu va dem so ki tu
             kernel->synchConsoleOut->PutChar(buffer[i]);
             i++;
         }
+        // Them ki tu xuong dong o cuoi
         buffer[i] = '\n';
         kernel->synchConsoleOut->PutChar(buffer[i]);
         return i - 1;
     }
     if ((this->fileTable[id]->Write(buffer, size)) > 0)
     {
+        // Lay vi tri moi
         newPos = fileTable[id]->GetCurrentPos();
         return newPos - oldPos;
     }

@@ -162,7 +162,7 @@ void SysReadString(char *buffer, int length)
 }
 
 // /* Xu ly syscall PrintString
-//     Input: buffer de in ra mna hinh, length kich thuoc chuoi 
+//     Input: buffer de in ra mna hinh, length kich thuoc chuoi
 // */
 // int readString(char *buffer, int length)
 // {
@@ -269,17 +269,19 @@ void SysExit(int ec)
     kernel->currentThread->FreeSpace();
     kernel->currentThread->Finish();
 }
+
 // Xu li syscall Open file
 OpenFileID SysOpen(char *filename, int type)
 {
     int pid = kernel->currentThread->processID;
-    return kernel->pTab->Open(pid,filename,type);
+    return kernel->pTab->Open(pid, filename, type);
 }
+
 // Xu li syscall Close file
 int SysClose(int id)
 {
     int pid = kernel->currentThread->processID;
-    return kernel->pTab->Close(pid,id);
+    return kernel->pTab->Close(pid, id);
 }
 
 /* Xu ly syscall CreateSemaphore
@@ -346,8 +348,8 @@ int SysSignal(char *name)
 }
 
 /* Xu ly syscall Read
-    input: semaphore name
-    output -1 neu loi nguoc lai tra ve id cua semaphore
+    input: input: buffer la bo nho can doc, size la so luong ki tu can doc, id la id cua file
+    output -1 neu loi nguoc lai tra ve so ki tu doc duoc
 */
 int SysRead(char *buffer, int size, OpenFileId id)
 {
@@ -356,8 +358,8 @@ int SysRead(char *buffer, int size, OpenFileId id)
 }
 
 /* Xu ly syscall Write
-    input: semaphore name
-    output -1 neu loi nguoc lai tra ve id cua semaphore
+    input: buffer la bo nho can ghi, size la so luong ki tu can ghi, id la id cua file
+    output -1 neu loi nguoc lai tra ve so ki tu ghi duoc
 */
 int SysWrite(char *buffer, int size, OpenFileId id)
 {
