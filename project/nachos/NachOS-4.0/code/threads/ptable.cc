@@ -96,18 +96,16 @@ int PTable::JoinUpdate(int id) {
     return ec;
 }
 
-int PTable::ExitUpdate(int exitcode) {
+void PTable::ExitUpdate(int exitcode) {
     int id = kernel->currentThread->processID;
     // neu la main process thi Halt
     if (id == 0) {
         kernel->currentThread->FreeSpace();
         kernel->interrupt->Halt();
-        return 0;
     }
     // neu khong ton tai process id
     if (IsExist(id) == false) {
         printf("\nError in PTable::ExitUpdate: This %d is not exist. Try again?", id);
-        return -1;
     }
 
     pcb[id]->SetExitCode(exitcode);
@@ -115,7 +113,6 @@ int PTable::ExitUpdate(int exitcode) {
     pcb[id]->JoinRelease(); // giai phong tien trinh
     pcb[id]->ExitWait();    // xin tien trinh cha cho exit
     Remove(id);
-    return exitcode;
 }
 
 int PTable::GetFreeSlot() {

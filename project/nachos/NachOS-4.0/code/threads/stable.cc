@@ -72,7 +72,7 @@ int STable::Wait(char *name) {
         if (mSemBitMap->Test(i)) {
             if (!strcmp(name, semTable[i]->getName())) {
                 semTable[i]->wait();
-                return i;
+                return 1;
             }
         }
     }
@@ -84,7 +84,7 @@ int STable::Signal(char *name) {
         if (mSemBitMap->Test(i)) {
             if (!strcmp(name, semTable[i]->getName())) {
                 semTable[i]->signal();
-                return i;
+                return 1;
             }
         }
     }

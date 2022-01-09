@@ -27,7 +27,7 @@ public:
     ~PTable();
 
 
-    int ExitUpdate(int ec);     // Xu li syscall SC_Exit
+    void ExitUpdate(int ec);     // Xu li syscall SC_Exit
     int ExecUpdate(char *name); // Xu li syscall SC_Exec
     int JoinUpdate(int id);     // XU li syscall SC_Join
 
