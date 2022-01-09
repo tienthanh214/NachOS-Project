@@ -14,7 +14,7 @@ int main() {
 
     fInput = Open("input.txt", 1);
     ReadInt(fInput, &nStudent);
-
+    Close(fInput);
     CreateFile("output.txt");
 
     for (i = 0; i < nStudent; ++i) {
@@ -35,6 +35,7 @@ void ReadInt(int fileId, int *num) {
     } while (!('0' <= c && c <= '9'));
     do {
         *num = (*num) * 10 + (c - '0');
-        Read(&c, 1, fileId);
+        if (Read(&c, 1, fileId) != 1)
+            break;
     } while ('0' <= c && c <= '9');
 }

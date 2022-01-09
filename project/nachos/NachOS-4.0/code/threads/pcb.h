@@ -15,8 +15,8 @@ class Semaphore;
 class PCB {
    private:
     Semaphore *joinsem; // semaphore cho qua trinh join
-    Semaphore *exitsem; // semaphore cho qua trinh join
-    Semaphore *multex;  // semaphore cho qua trinh join
+    Semaphore *exitsem; // semaphore cho qua trinh exit
+    Semaphore *multex;  // semaphore cho truy xuat numwait
 
     Thread *thread;     // Tien trinh
     char filename[MAX_FILENAME_LENGTH]; // Ten tien trinh
