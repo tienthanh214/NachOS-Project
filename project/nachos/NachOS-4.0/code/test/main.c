@@ -14,6 +14,7 @@ int main() {
 
     fInput = Open("input.txt", 1);
     ReadInt(fInput, &nStudent);
+    Close(fInput);
 
     CreateFile("output.txt");
 

@@ -161,28 +161,28 @@ void SysReadString(char *buffer, int length)
     }
 }
 
-/* Xu ly syscall PrintString
-    Input: buffer de in ra mna hinh, length kich thuoc chuoi 
-*/
-int readString(char *buffer, int length)
-{
-    int idx;
-    char ch;
-    for (idx = 0; idx < length; ++idx)
-        buffer[idx] = 0;
-    for (idx = 0; idx < length;)
-    {
-        do
-        { // bo qua cac ki tu EOF
-            ch = kernel->synchConsoleIn->GetChar();
-        } while (ch == EOF);
-        if (ch == '\n') // enter -> ket thuc nhap
-            break;
-        buffer[idx++] = ch;
-    }
-    buffer[idx++] = '\0';
-    return idx;
-}
+// /* Xu ly syscall PrintString
+//     Input: buffer de in ra mna hinh, length kich thuoc chuoi 
+// */
+// int readString(char *buffer, int length)
+// {
+//     int idx;
+//     char ch;
+//     for (idx = 0; idx < length; ++idx)
+//         buffer[idx] = 0;
+//     for (idx = 0; idx < length;)
+//     {
+//         do
+//         { // bo qua cac ki tu EOF
+//             ch = kernel->synchConsoleIn->GetChar();
+//         } while (ch == EOF);
+//         if (ch == '\n') // enter -> ket thuc nhap
+//             break;
+//         buffer[idx++] = ch;
+//     }
+//     buffer[idx++] = '\0';
+//     return idx;
+// }
 
 /*  Xu ly syscall PrintString
     Input: buffer (char*) de in ra man hinh
@@ -272,14 +272,14 @@ void SysExit(int ec)
 // Xu li syscall Open file
 OpenFileID SysOpen(char *filename, int type)
 {
-    int pid = kernel ->currentThread->processID;
+    int pid = kernel->currentThread->processID;
     return kernel->pTab->Open(pid,filename,type);
 }
 // Xu li syscall Close file
 int SysClose(int id)
 {
-    int pid = kernel ->currentThread->processID;
-    return kernel->pTab->Open(pid,id);
+    int pid = kernel->currentThread->processID;
+    return kernel->pTab->Close(pid,id);
 }
 
 /* Xu ly syscall CreateSemaphore
@@ -351,8 +351,8 @@ int SysSignal(char *name)
 */
 int SysRead(char *buffer, int size, OpenFileId id)
 {
-    int pid = kernel ->currentThread->processID;
-    return kernel->pTab->Read(pid,buffer,size,id);
+    int pid = kernel->currentThread->processID;
+    return kernel->pTab->Read(pid, buffer, size, id);
 }
 
 /* Xu ly syscall Write
@@ -361,32 +361,18 @@ int SysRead(char *buffer, int size, OpenFileId id)
 */
 int SysWrite(char *buffer, int size, OpenFileId id)
 {
-    int pid = kernel ->currentThread->processID;
-    return kernel->pTab->Write(pid,buffer,size,id);
+    int pid = kernel->currentThread->processID;
+    return kernel->pTab->Write(pid, buffer, size, id);
 }
 
 /* Xu ly syscall Seek
     input: position vi tri can di chuyen, id la id cua file
     output -1 neu loi nguoc lai tra ve pos vua di chuyen toi
 */
-int SysSeek(int position, int id)
+int SysSeek(int position, OpenFileId id)
 {
-    // Id cua file nam ngoai vung quan li
-    if (id < 0 || id > 9)
-        return -1;
-    // File ko ton tai thi bao loi
-    if (kernel->fileSystem->openf[id] == NULL)
-        return -1;
-    // Khong the seek tren console
-    if (id == 1 || id == 0)
-        return -1;
-    // Neu position la -1 thi seek het toan bo file
-    position = (position == -1) ? kernel->fileSystem->openf[id]->Length() : position;
-    if (position > kernel->fileSystem->openf[id]->Length() || position < 0)
-        return -1;
-    // Neu mo duoc file thi di chuyen den vi tri duoc yeu cau
-    kernel->fileSystem->openf[id]->Seek(position);
-    return position;
+    int pid = kernel->currentThread->processID;
+    return kernel->pTab->Seek(pid, position, id);
 }
 
 #endif /* ! __USERPROG_KSYSCALL_H__ */

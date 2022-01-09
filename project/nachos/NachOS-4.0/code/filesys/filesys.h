@@ -87,11 +87,11 @@ class FileSystem {
 	}
 
     OpenFile* Open(char *name) {
-	  int fileDescriptor = OpenForReadWrite(name, FALSE);
+	  	int fileDescriptor = OpenForReadWrite(name, FALSE);
 
-	  if (fileDescriptor == -1) return NULL;
-	  return new OpenFile(fileDescriptor,name);
-      }
+	  	if (fileDescriptor == -1) return NULL;
+	  	return new OpenFile(fileDescriptor,name);
+    }
 
 	OpenFile* Open(char *name, int type) {
 		int fileDescriptor = OpenForReadWrite(name, FALSE);

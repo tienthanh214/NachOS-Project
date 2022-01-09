@@ -54,8 +54,9 @@ class PCB {
     int FindFreeSlot();         // Tim vi tri con trong de luu file can open
     OpenFileID Open(char*name, int type);
     int Close(OpenFileID fid);
-    int Read(char* buffer,int charcount, OpenFileID id);
+    int Read(char* buffer, int charcount, OpenFileID id);
     int Write(char* buffer, int charcount, OpenFileID id);
+    int Seek(int position, OpenFileID id);
 };
 
 #endif
