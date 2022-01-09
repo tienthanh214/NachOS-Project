@@ -264,7 +264,8 @@ void ExceptionHandler(ExceptionType which)
             int type = kernel->machine->ReadRegister(5);     // Doc tham so type
             char *filename;
             filename = User2System(virtAddr, MAX_FILENAME_LENGTH + 1);
-            SysOpen(filename, type); //Mo file, tra ve type neu thanh cong, tra ve -1 neu that bai
+            OpenFileID result = SysOpen(filename, type); //Mo file, tra ve type neu thanh cong, tra ve -1 neu that bai
+            kernel->machine->WriteRegister(2, result);
             delete[] filename;
             IncreasePC();
             return;
@@ -273,7 +274,8 @@ void ExceptionHandler(ExceptionType which)
         case SC_Close:
         {
             int id = kernel->machine->ReadRegister(4); // Lay id cua file tu thanh ghi so 4
-            SysClose(id);                              // Dong file
+            int result = SysClose(id);                              // Dong file
+            kernel->machine->WriteRegister(2, result);
             IncreasePC();
             return;
             break;

@@ -270,50 +270,16 @@ void SysExit(int ec)
     kernel->currentThread->Finish();
 }
 // Xu li syscall Open file
-void SysOpen(char *filename, int type)
+OpenFileID SysOpen(char *filename, int type)
 {
-    int freeSlot = kernel->fileSystem->FindFreeSlot();
-    if (freeSlot != -1) //Chi xu li khi con slot trong mang openf[]
-    {
-        if (type == 0 || type == 1) //chi xu li khi type = 0 hoac 1
-        {
-            if ((kernel->fileSystem->openf[freeSlot] = kernel->fileSystem->Open(filename, type)) != NULL) //Mo file thanh cong
-            {
-                kernel->machine->WriteRegister(2, freeSlot); //tra ve OpenFileID
-                return;
-            }
-        }
-        else if (type == 2) // xu li stdin voi type = 2
-        {
-            kernel->machine->WriteRegister(2, 0); //tra ve OpenFileID
-            return;
-        }
-        else // xu li stdout voi type = 3
-        {
-            kernel->machine->WriteRegister(2, 1); //tra ve OpenFileID
-            return;
-        }
-        kernel->machine->WriteRegister(2, -1); // tra ve -1 neu filename khong ton tai
-        return;
-    }
-    kernel->machine->WriteRegister(2, -1); //Khong mo duoc file return -1
-    return;
+    int pid = kernel ->currentThread->processID;
+    return kernel->pTab->Open(pid,filename,type);
 }
 // Xu li syscall Close file
-void SysClose(int id)
+int SysClose(int id)
 {
-    if (id >= 0 && id <= 9) //Chi xu li khi file id nam trong [0, 9]
-    {
-        if (kernel->fileSystem->openf[id]) //neu mo file thanh cong
-        {
-            delete kernel->fileSystem->openf[id]; //Xoa vung nho luu tru file
-            kernel->fileSystem->openf[id] = NULL; //Gan vung nho NULL
-            kernel->machine->WriteRegister(2, 0);
-            return;
-        }
-    }
-    kernel->machine->WriteRegister(2, -1);
-    return;
+    int pid = kernel ->currentThread->processID;
+    return kernel->pTab->Open(pid,id);
 }
 
 /* Xu ly syscall CreateSemaphore
@@ -385,26 +351,8 @@ int SysSignal(char *name)
 */
 int SysRead(char *buffer, int size, OpenFileId id)
 {
-    int oldPos, newPos;
-    // Id cua file nam ngoai vung quan li
-    if (id < 0 || id > 9 || id == CONSOLE_OUTPUT)
-        return -1;
-    // File ko ton tai thi bao loi
-    if (kernel->fileSystem->openf[id] == NULL)
-        return -1;
-
-    oldPos = kernel->fileSystem->openf[id]->GetCurrentPos();
-    if (id == CONSOLE_INPUT)
-    {
-        int actualSize = readString(buffer, size);
-        return actualSize;
-    }
-    if ((kernel->fileSystem->openf[id]->Read(buffer, size)) > 0)
-    {
-        newPos = kernel->fileSystem->openf[id]->GetCurrentPos();
-        return newPos - oldPos;
-    }
-    return -2;
+    int pid = kernel ->currentThread->processID;
+    return kernel->pTab->Read(pid,buffer,size,id);
 }
 
 /* Xu ly syscall Write
@@ -413,36 +361,8 @@ int SysRead(char *buffer, int size, OpenFileId id)
 */
 int SysWrite(char *buffer, int size, OpenFileId id)
 {
-    int oldPos, newPos;
-    // Id cua file nam ngoai vung quan li
-    if (id < 0 || id > 9 || id == CONSOLE_INPUT)
-        return -1;
-    // File ko ton tai thi bao loi
-    if (kernel->fileSystem->openf[id] == NULL)
-        return -1;
-    // Neu la file read only thi bao loi
-    if (kernel->fileSystem->openf[id]->type == 1)
-        return -1;
-
-    oldPos = kernel->fileSystem->openf[id]->GetCurrentPos();
-    if (id == CONSOLE_OUTPUT)
-    {
-        int i = 0;
-        while (buffer[i] != 0 && buffer[i] != '\n')
-        {
-            kernel->synchConsoleOut->PutChar(buffer[i]);
-            i++;
-        }
-        buffer[i] = '\n';
-        kernel->synchConsoleOut->PutChar(buffer[i]);
-        return i - 1;
-    }
-    if ((kernel->fileSystem->openf[id]->Write(buffer, size)) > 0)
-    {
-        newPos = kernel->fileSystem->openf[id]->GetCurrentPos();
-        return newPos - oldPos;
-    }
-    return -1;
+    int pid = kernel ->currentThread->processID;
+    return kernel->pTab->Write(pid,buffer,size,id);
 }
 
 /* Xu ly syscall Seek

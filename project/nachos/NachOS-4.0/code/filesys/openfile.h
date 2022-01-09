@@ -31,11 +31,24 @@ class OpenFile {
   public:
     //Khai bao bien type
   	int type;
+	char* filename;
   	
 	//Ham dung cua class OpenFile
-	OpenFile(int f) { file = f; currentOffset = 0; type = 0; }	// mo file mac dinh
-	OpenFile(int f, int t) { file = f; currentOffset = 0; type = t; }	// mo file voi tham so type
+	OpenFile(int f,char* name) { 
+		file = f; currentOffset = 0; type = 0;
+		this->filename = new char[strlen(name)];
+        strncpy(this->filename, name, strlen(name));
+		}	// mo file mac dinh
+	OpenFile(int f, int t,char* name) { 
+		file = f; currentOffset = 0; type = t; 
+		this->filename = new char[strlen(name)];
+        strncpy(this->filename, name, strlen(name));
+		}	// mo file voi tham so type
     ~OpenFile() { Close(file); }			// close the file
+
+	char* GetFilename(){
+		return this->filename;
+	}
 
 	int Seek(int pos) {
 		Lseek(file, pos, 0);

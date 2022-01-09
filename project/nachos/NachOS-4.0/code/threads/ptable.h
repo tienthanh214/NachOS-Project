@@ -37,6 +37,7 @@ public:
     char *GetFileName(int id);  // Tra ve ten tien trinh
 
     void initStartProcess(char* name);  // Khoi chay tien trinh
+   
 };
 
 #endif
