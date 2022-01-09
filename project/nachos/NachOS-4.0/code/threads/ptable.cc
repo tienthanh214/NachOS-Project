@@ -131,6 +131,26 @@ void PTable::Remove(int pid) {
         delete pcb[pid];
 }
 
-char *PTable::GetFileName(int id) {
-    return (pcb[id]->GetFileName());
+char *PTable::GetFileName(int pid) {
+    return (pcb[pid]->GetFileName());
+}
+
+OpenFileID PTable::Open(int pid, char*name, int type) {
+    return pcb[pid]->Open(name, type);
+}
+
+int PTable::Close(int pid, OpenFileID fid) {
+    return pcb[pid]->Close(fid);
+}
+
+int PTable::Read(int pid, char* buffer,int charcount, OpenFileID fid) {
+    return pcb[pid]->Read(buffer, charcount, fid);
+}
+    
+int PTable::Write(int pid, char* buffer, int charcount, OpenFileID fid) {
+    return pcb[pid]->Write(buffer, charcount, fid);
+}
+
+int PTable::Seek(int pid, int position, OpenFileID fid) {
+    return pcb[pid]->Seek(position, fid);
 }

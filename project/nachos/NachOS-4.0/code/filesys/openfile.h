@@ -31,11 +31,26 @@ class OpenFile {
   public:
     //Khai bao bien type
   	int type;
+	char* filename;
   	
 	//Ham dung cua class OpenFile
-	OpenFile(int f) { file = f; currentOffset = 0; type = 0; }	// mo file mac dinh
-	OpenFile(int f, int t) { file = f; currentOffset = 0; type = t; }	// mo file voi tham so type
+	OpenFile(int f,char* name) { 
+		file = f; currentOffset = 0; type = 0;
+		this->filename = new char[strlen(name) + 1];
+        strncpy(this->filename, name, strlen(name));
+	}	// mo file mac dinh
+
+	OpenFile(int f, int t,char* name) { 
+		file = f; currentOffset = 0; type = t; 
+		this->filename = new char[strlen(name) + 1];
+        strncpy(this->filename, name, strlen(name));
+	}	// mo file voi tham so type
+
     ~OpenFile() { Close(file); }			// close the file
+
+	char* GetFilename(){
+		return this->filename;
+	}
 
 	int Seek(int pos) {
 		Lseek(file, pos, 0);
@@ -46,17 +61,20 @@ class OpenFile {
 	int ReadAt(char *into, int numBytes, int position) { 
     		Lseek(file, position, 0); 
 		return ReadPartial(file, into, numBytes); 
-		}	
+	}	
+
     int WriteAt(char *from, int numBytes, int position) { 
     		Lseek(file, position, 0); 
 		WriteFile(file, from, numBytes); 
 		return numBytes;
-		}	
+	}
+
     int Read(char *into, int numBytes) {
 		int numRead = ReadAt(into, numBytes, currentOffset); 
 		currentOffset += numRead;
 		return numRead;
-    		}
+    }
+
     int Write(char *from, int numBytes) {
 		int numWritten = WriteAt(from, numBytes, currentOffset); 
 		currentOffset += numWritten;

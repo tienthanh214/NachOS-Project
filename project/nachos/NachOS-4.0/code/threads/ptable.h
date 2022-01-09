@@ -37,6 +37,12 @@ public:
     char *GetFileName(int id);  // Tra ve ten tien trinh
 
     void initStartProcess(char* name);  // Khoi chay tien trinh
+   
+    OpenFileID Open(int pid, char*name, int type);
+    int Close(int pid, OpenFileID fid);
+    int Read(int pid, char* buffer,int charcount, OpenFileID fid);
+    int Write(int pid, char* buffer, int charcount, OpenFileID fid);
+    int Seek(int pid, int position, OpenFileID fid);
 };
 
 #endif

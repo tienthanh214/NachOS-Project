@@ -26,6 +26,8 @@ class PCB {
 
    public:
     int parentID;       // ID cua tien trinh
+    OpenFile** fileTable;
+    int index;
     
     PCB();
     PCB(int id);
@@ -48,6 +50,13 @@ class PCB {
 
     void SetFileName(char *fn); // Dat filename cho ca tien trinh
     char *GetFileName();        // Lay filename cho ca tien trinh
+
+    int FindFreeSlot();         // Tim vi tri con trong de luu file can open
+    OpenFileID Open(char*name, int type);
+    int Close(OpenFileID fid);
+    int Read(char* buffer, int charcount, OpenFileID id);
+    int Write(char* buffer, int charcount, OpenFileID id);
+    int Seek(int position, OpenFileID id);
 };
 
 #endif
