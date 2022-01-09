@@ -13,8 +13,10 @@ int main()
         // chi cho 1 sinh vien lay nuoc
         Wait("faucet");
         fOutput = Open("output.txt", 0);
-        // ghi ket qua vao cuoi file
-        Seek(Seek(-1, fOutput), fOutput);
+        // ghi ket qua
+        lenOutput = Seek(-1, fOutput);
+        Seek(lenOutput, fOutput);
+
         WriteInt(fOutput, GetPID());
         WriteChar(fOutput, ' ');
         Close(fOutput);
