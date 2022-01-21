@@ -169,20 +169,19 @@ OpenFileID PCB::Open(char *name, int type)
         }
     }
     int freeSlot = this->FindFreeSlot();
-    if (freeSlot != -1) //Chi xu li khi con slot trong
-    {
-        if (type == 0 || type == 1) //chi xu li khi type = 0 hoac 1
-        {
-            if ((fileTable[freeSlot] = kernel->fileSystem->Open(name, type)) != NULL) //Mo file thanh cong
-                return freeSlot;
-        }
-        else if (type == 2) // xu li stdin voi type = 2
-            return 0;
-        else // xu li stdout voi type = 3
-            return 1;
-        return -1;
+    if (freeSlot == -1) return -1;
+    //Chi xu li khi con slot trong
+    if (type == 0 || type == 1) { //chi xu li khi type = 0 hoac 1
+        fileTable[freeSlot] = kernel->fileSystem->Open(name, type);
+        if (fileTable[freeSlot] != NULL) // Da mo file thanh cong
+            return freeSlot;
     }
+    else if (type == 2) // xu li stdin voi type = 2
+        return 0;
+    else // xu li stdout voi type = 3
+        return 1;
     return -1;
+
 }
 
 // Xu li syscall Close file

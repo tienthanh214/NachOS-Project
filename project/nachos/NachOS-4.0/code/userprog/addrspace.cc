@@ -196,6 +196,7 @@ AddrSpace::Load(char *fileName)
             );
         }
     }
+
     // copy initdata into memory
     if (noffH.initData.size > 0) {
         DEBUG(dbgAddr, "Initializing data segment.");
